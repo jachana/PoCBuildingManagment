@@ -2,10 +2,6 @@ services:
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -17,16 +13,9 @@ services:
   minio:
     image: minio/minio
     restart: unless-stopped
-    environment:
-      - SERVICE_FQDN_MINIO=${SERVICE_FQDN_MINIO}
-      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
-      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
     command: server /data --console-address ":9001"
     volumes:
       - miniodata:/data
-    ports:
-      - "9000:9000"
-      - "9001:9001"
 
   api:
     build:
@@ -36,38 +25,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      minio:
-        condition: service_started
-    environment:
-      - SERVICE_FQDN_API=${SERVICE_FQDN_API}
-      - DATABASE_URL=${DATABASE_URL}
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
-      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
-      - MINIO_PORT=${MINIO_PORT}
-      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
-      - MINIO_BUCKET=${MINIO_BUCKET}
-      - MINIO_USE_SSL=${MINIO_USE_SSL}
-      - PORT=${PORT}
-      - NODE_ENV=${NODE_ENV}
-    ports:
-      - "3000:3000"
 
   admin:
     build:
       context: ./admin
       dockerfile: Dockerfile
-      args:
-        - VITE_API_URL=${VITE_API_URL}
     restart: unless-stopped
-    depends_on:
-      - api
-    environment:
-      - SERVICE_FQDN_ADMIN=${SERVICE_FQDN_ADMIN}
-      - VITE_API_URL=${VITE_API_URL}
-    ports:
-      - "80:80"
 
 volumes:
   pgdata:
