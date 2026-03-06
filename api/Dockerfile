@@ -1,8 +1,8 @@
 FROM node:20-alpine AS build
 WORKDIR /app
-ENV NODE_ENV=development
 COPY package*.json ./
-RUN npm ci
+# Force devDependencies install regardless of NODE_ENV injected by Coolify
+RUN NODE_ENV=development npm ci
 COPY prisma ./prisma
 RUN npx prisma generate
 COPY tsconfig.json ./
