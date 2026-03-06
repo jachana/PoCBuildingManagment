@@ -24,9 +24,9 @@ services:
     command: server /data --console-address ":9001"
     volumes:
       - miniodata:/data
-    ports:
-      - "9000:9000"
-      - "9001:9001"
+    expose:
+      - "9000"
+      - "9001"
 
   api:
     build:
@@ -51,8 +51,8 @@ services:
       - MINIO_USE_SSL=${MINIO_USE_SSL}
       - PORT=${PORT}
       - NODE_ENV=${NODE_ENV}
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
 
   admin:
     build:
@@ -65,8 +65,8 @@ services:
       - api
     environment:
       - SERVICE_FQDN_ADMIN=${SERVICE_FQDN_ADMIN}
-    ports:
-      - "80:80"
+    expose:
+      - "80"
 
 volumes:
   pgdata:
