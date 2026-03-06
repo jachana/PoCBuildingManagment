@@ -3,13 +3,13 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-socialbuilding}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -18,9 +18,9 @@ services:
     image: minio/minio
     restart: unless-stopped
     environment:
-      SERVICE_FQDN_MINIO: ${SERVICE_FQDN_MINIO}
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?Set MINIO_ACCESS_KEY}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?Set MINIO_SECRET_KEY}
+      - SERVICE_FQDN_MINIO=${SERVICE_FQDN_MINIO}
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
     command: server /data --console-address ":9001"
     volumes:
       - miniodata:/data
@@ -39,18 +39,18 @@ services:
       minio:
         condition: service_started
     environment:
-      SERVICE_FQDN_API: ${SERVICE_FQDN_API}
-      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-socialbuilding}
-      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET}
-      MINIO_ENDPOINT: minio
-      MINIO_PORT: 9000
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-      MINIO_BUCKET: ${MINIO_BUCKET:-socialbuilding}
-      MINIO_USE_SSL: "false"
-      PORT: 3000
-      NODE_ENV: production
+      - SERVICE_FQDN_API=${SERVICE_FQDN_API}
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_PORT=${MINIO_PORT}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_BUCKET=${MINIO_BUCKET}
+      - MINIO_USE_SSL=${MINIO_USE_SSL}
+      - PORT=${PORT}
+      - NODE_ENV=${NODE_ENV}
     ports:
       - "3000:3000"
 
@@ -62,7 +62,8 @@ services:
     depends_on:
       - api
     environment:
-      SERVICE_FQDN_ADMIN: ${SERVICE_FQDN_ADMIN}
+      - SERVICE_FQDN_ADMIN=${SERVICE_FQDN_ADMIN}
+      - VITE_API_URL=${VITE_API_URL}
     ports:
       - "80:80"
 
