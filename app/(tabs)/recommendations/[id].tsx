@@ -40,6 +40,7 @@ export default function RecommendationDetailScreen() {
           <Text style={styles.authorName}>{item.author.displayName}</Text>
         </View>
         {!isOwner && (
+          <>
           <TouchableOpacity style={styles.reportButton} onPress={() => router.push({ pathname: '/report', params: { contentType: 'RECOMMENDATION', contentId: item.id } })}>
             <Text style={styles.reportButtonText}>Reportar recomendaci\u00f3n</Text>
           </TouchableOpacity>
@@ -56,6 +57,7 @@ export default function RecommendationDetailScreen() {
             }}>
               <Text style={styles.blockButtonText}>Bloquear usuario</Text>
             </TouchableOpacity>
+          </>
         )}
       </View>
     </ScrollView>
