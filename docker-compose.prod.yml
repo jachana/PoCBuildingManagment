@@ -18,12 +18,14 @@ services:
     image: minio/minio
     restart: unless-stopped
     environment:
+      SERVICE_FQDN_MINIO: ${SERVICE_FQDN_MINIO}
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?Set MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?Set MINIO_SECRET_KEY}
     command: server /data --console-address ":9001"
     volumes:
       - miniodata:/data
     ports:
+      - "9000:9000"
       - "9001:9001"
 
   api:
@@ -37,6 +39,7 @@ services:
       minio:
         condition: service_started
     environment:
+      SERVICE_FQDN_API: ${SERVICE_FQDN_API}
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-socialbuilding}
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET}
@@ -58,8 +61,10 @@ services:
     restart: unless-stopped
     depends_on:
       - api
+    environment:
+      SERVICE_FQDN_ADMIN: ${SERVICE_FQDN_ADMIN}
     ports:
-      - "5173:80"
+      - "80:80"
 
 volumes:
   pgdata:
