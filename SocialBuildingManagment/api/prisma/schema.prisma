@@ -1,0 +1,236 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Building {
+  id              String   @id @default(uuid())
+  name            String
+  address         String
+  maxPostsPerUser Int      @default(10)
+  users           User[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  passwordHash    String
+  displayName     String
+  fullName        String
+  phone           String?
+  unitNumber      String
+  avatarUrl       String?
+  role            UserRole  @default(PENDING)
+  approved        Boolean   @default(false)
+  blocked         Boolean   @default(false)
+  activePostCount Int       @default(0)
+  buildingId      String
+  building        Building  @relation(fields: [buildingId], references: [id])
+  posts           Post[]
+  recommendations Recommendation[]
+  entrepreneur    EntrepreneurProfile?
+  reports         Report[]  @relation("ReportedBy")
+  blockedUsers    UserBlock[] @relation("Blocker")
+  blockedBy       UserBlock[] @relation("Blocked")
+  deviceTokens    DeviceToken[]
+  refreshTokens   RefreshToken[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([buildingId])
+  @@index([email])
+}
+
+enum UserRole {
+  PENDING
+  RESIDENT
+  ADMIN
+  BUILDING_MANAGER
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([tokenHash])
+}
+
+model Post {
+  id          String       @id @default(uuid())
+  title       String       @db.VarChar(100)
+  description String       @db.VarChar(1000)
+  price       Int
+  currency    String       @default("CLP")
+  category    PostCategory
+  images      String[]
+  status      PostStatus   @default(ACTIVE)
+  reportCount Int          @default(0)
+  hidden      Boolean      @default(false)
+  authorId    String
+  author      User         @relation(fields: [authorId], references: [id])
+  reports     Report[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([authorId])
+  @@index([status, createdAt(sort: Desc)])
+  @@index([category, createdAt(sort: Desc)])
+}
+
+enum PostCategory {
+  FURNITURE
+  ELECTRONICS
+  HOME_APPLIANCES
+  CLOTHING
+  SPORTS
+  BOOKS
+  MOVING_ITEMS
+  OTHER
+}
+
+enum PostStatus {
+  ACTIVE
+  SOLD
+  REMOVED
+  EXPIRED
+}
+
+model Recommendation {
+  id          String                 @id @default(uuid())
+  serviceName String                 @db.VarChar(100)
+  category    RecommendationCategory
+  rating      Int
+  comment     String                 @db.VarChar(500)
+  contactInfo String?
+  reportCount Int                    @default(0)
+  hidden      Boolean                @default(false)
+  authorId    String
+  author      User                   @relation(fields: [authorId], references: [id])
+  reports     Report[]
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  @@index([authorId])
+  @@index([category, createdAt(sort: Desc)])
+}
+
+enum RecommendationCategory {
+  NANNY
+  TRANSPORTATION
+  DOG_WALKER
+  DECORATOR
+  ELECTRICIAN
+  GARDENER
+  PERSONAL_TRAINER
+  PLUMBER
+  CLEANER
+  OTHER
+}
+
+model EntrepreneurProfile {
+  id               String              @id @default(uuid())
+  profession       String
+  category         EntrepreneurCategory
+  description      String              @db.VarChar(1000)
+  contactInfo      String
+  avatarUrl        String?
+  residentDiscount String?
+  active           Boolean             @default(true)
+  reportCount      Int                 @default(0)
+  hidden           Boolean             @default(false)
+  userId           String              @unique
+  user             User                @relation(fields: [userId], references: [id])
+  reports          Report[]
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+}
+
+enum EntrepreneurCategory {
+  LEGAL
+  HEALTH
+  DESIGN
+  COACHING
+  PHOTOGRAPHY
+  EDUCATION
+  TECHNOLOGY
+  BEAUTY
+  FITNESS
+  OTHER
+}
+
+model Report {
+  id               String              @id @default(uuid())
+  reason           ReportReason
+  description      String?             @db.VarChar(500)
+  status           ReportStatus        @default(PENDING)
+  contentType      ContentType
+  postId           String?
+  post             Post?               @relation(fields: [postId], references: [id])
+  recommendationId String?
+  recommendation   Recommendation?     @relation(fields: [recommendationId], references: [id])
+  entrepreneurId   String?
+  entrepreneur     EntrepreneurProfile? @relation(fields: [entrepreneurId], references: [id])
+  reportedById     String
+  reportedBy       User                @relation("ReportedBy", fields: [reportedById], references: [id])
+  reviewedById     String?
+  reviewedAt       DateTime?
+  createdAt        DateTime            @default(now())
+
+  @@index([status, createdAt])
+  @@index([contentType, status])
+}
+
+enum ReportReason {
+  INAPPROPRIATE
+  SPAM
+  WRONG_CATEGORY
+  SCAM
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  DISMISSED
+}
+
+enum ContentType {
+  POST
+  RECOMMENDATION
+  ENTREPRENEUR
+}
+
+model UserBlock {
+  id        String   @id @default(uuid())
+  blockerId String
+  blocker   User     @relation("Blocker", fields: [blockerId], references: [id])
+  blockedId String
+  blocked   User     @relation("Blocked", fields: [blockedId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([blockerId, blockedId])
+  @@index([blockerId])
+  @@index([blockedId])
+}
+
+model DeviceToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  platform  String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}

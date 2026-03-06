@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv tool:*)",
+      "Bash(where uv)",
+      "Read(//c/Users/jacha/.local/bin/**)",
+      "Read(//c/Users/jacha/.cargo/**)",
+      "Read(//c/Users/jacha/AppData/Local/**)",
+      "Bash(pip:*)",
+      "Bash(curl:*)",
+      "Bash(export:*)",
+      "Bash(pwsh:*)",
+      "Bash(powershell.exe:*)",
+      "WebSearch",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(mkdir:*)",
+      "Bash(npm install:*)",
+      "Bash(echo PATH=$PATH:*)",
+      "Read(//c/Program Files/nodejs/**)",
+      "Read(//c/Program Files \\(x86\\)/nodejs/**)",
+      "Read(//c/Users/jacha/AppData/**)"
+    ]
+  }
+}

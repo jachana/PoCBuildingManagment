@@ -1,0 +1,15 @@
+node_modules/
+.git/
+.expo/
+ios/
+android/
+coverage/
+*.log
+.env*
+.DS_Store
+Thumbs.db
+dist/
+build/
+web-build/
+.specify/
+specs/
