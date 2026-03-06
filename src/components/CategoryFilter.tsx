@@ -1,4 +1,5 @@
 import { ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { colors, spacing } from '@/theme';
 
 interface CategoryFilterProps {
   categories: Array<{ value: string; label: string }>;
@@ -13,7 +14,7 @@ export default function CategoryFilter({ categories, selected, onSelect }: Categ
         style={[styles.chip, !selected && styles.chipSelected]}
         onPress={() => onSelect(undefined)}
       >
-        <Text style={[styles.chipText, !selected && styles.chipTextSelected]}>Todos</Text>
+        <Text style={[styles.chipText, !selected && styles.chipTextSelected]}>TODOS</Text>
       </TouchableOpacity>
       {categories.map((cat) => (
         <TouchableOpacity
@@ -22,7 +23,7 @@ export default function CategoryFilter({ categories, selected, onSelect }: Categ
           onPress={() => onSelect(selected === cat.value ? undefined : cat.value)}
         >
           <Text style={[styles.chipText, selected === cat.value && styles.chipTextSelected]}>
-            {cat.label}
+            {cat.label.toUpperCase()}
           </Text>
         </TouchableOpacity>
       ))}
@@ -31,13 +32,26 @@ export default function CategoryFilter({ categories, selected, onSelect }: Categ
 }
 
 const styles = StyleSheet.create({
-  container: { maxHeight: 48 },
-  content: { paddingHorizontal: 16, paddingVertical: 8, gap: 8 },
+  container: { maxHeight: 52 },
+  content: { paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, gap: spacing.sm },
   chip: {
-    paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20,
-    backgroundColor: '#f0f0f0', marginRight: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 4,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: colors.surfaceBorder,
+    marginRight: spacing.sm,
   },
-  chipSelected: { backgroundColor: '#2563eb' },
-  chipText: { fontSize: 13, color: '#666' },
-  chipTextSelected: { color: '#fff', fontWeight: '600' },
+  chipSelected: {
+    backgroundColor: colors.goldSubtle,
+    borderColor: colors.gold,
+  },
+  chipText: {
+    fontSize: 11,
+    color: colors.textMuted,
+    letterSpacing: 1,
+    fontWeight: '500',
+  },
+  chipTextSelected: { color: colors.gold },
 });

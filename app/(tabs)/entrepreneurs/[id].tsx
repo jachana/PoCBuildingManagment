@@ -3,10 +3,11 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import { useEntrepreneurQuery } from '@/hooks/useEntrepreneurs';
 import { useAuth } from '@/hooks/useAuth';
+import { colors, spacing, typography } from '@/theme';
 
 const CATEGORY_LABELS: Record<string, string> = {
-  LEGAL: 'Legal', HEALTH: 'Salud', DESIGN: 'Diseño', COACHING: 'Coaching',
-  PHOTOGRAPHY: 'Fotografía', EDUCATION: 'Educación', TECHNOLOGY: 'Tecnología',
+  LEGAL: 'Legal', HEALTH: 'Salud', DESIGN: 'Diseno', COACHING: 'Coaching',
+  PHOTOGRAPHY: 'Fotografia', EDUCATION: 'Educacion', TECHNOLOGY: 'Tecnologia',
   BEAUTY: 'Belleza', FITNESS: 'Fitness', OTHER: 'Otro',
 };
 
@@ -16,7 +17,7 @@ export default function EntrepreneurDetailScreen() {
   const { user } = useAuth();
   const { data: profile, isLoading } = useEntrepreneurQuery(id);
 
-  if (isLoading || !profile) return <View style={styles.center}><Text>Cargando...</Text></View>;
+  if (isLoading || !profile) return <View style={styles.center}><Text style={{ color: colors.textMuted }}>Cargando...</Text></View>;
   const isOwner = user?.id === profile.user.id;
 
   return (
@@ -36,13 +37,13 @@ export default function EntrepreneurDetailScreen() {
         </View>
       </View>
       <View style={styles.content}>
-        <Text style={styles.sectionTitle}>Descripción</Text>
+        <Text style={styles.sectionTitle}>DESCRIPCION</Text>
         <Text style={styles.description}>{profile.description}</Text>
-        <Text style={styles.sectionTitle}>Contacto</Text>
+        <Text style={styles.sectionTitle}>CONTACTO</Text>
         <Text style={styles.contactInfo}>{profile.contactInfo}</Text>
         {profile.residentDiscount && (
           <>
-            <Text style={styles.sectionTitle}>Descuento para residentes</Text>
+            <Text style={styles.sectionTitle}>DESCUENTO RESIDENTES</Text>
             <View style={styles.discountBadge}>
               <Text style={styles.discountText}>{profile.residentDiscount}</Text>
             </View>
@@ -50,7 +51,7 @@ export default function EntrepreneurDetailScreen() {
         )}
         {isOwner && (
           <TouchableOpacity style={styles.editButton} onPress={() => router.push('/(tabs)/entrepreneurs/edit')}>
-            <Text style={styles.editButtonText}>Editar perfil</Text>
+            <Text style={styles.editButtonText}>EDITAR PERFIL</Text>
           </TouchableOpacity>
         )}
         {!isOwner && (
@@ -59,7 +60,7 @@ export default function EntrepreneurDetailScreen() {
               <Text style={styles.reportButtonText}>Reportar perfil</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.blockButton} onPress={() => {
-              Alert.alert('Bloquear usuario', `¿Bloquear a ${profile.user.displayName}?`, [
+              Alert.alert('Bloquear usuario', `Bloquear a ${profile.user.displayName}?`, [
                 { text: 'Cancelar', style: 'cancel' },
                 { text: 'Bloquear', style: 'destructive', onPress: async () => {
                   const { blockUser } = await import('@/services/blocks');
@@ -79,26 +80,26 @@ export default function EntrepreneurDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: { alignItems: 'center', paddingVertical: 32, backgroundColor: '#f9f9f9' },
-  avatar: { width: 80, height: 80, borderRadius: 40, marginBottom: 12 },
-  avatarPlaceholder: { backgroundColor: '#2563eb', justifyContent: 'center', alignItems: 'center' },
-  avatarText: { color: '#fff', fontSize: 32, fontWeight: 'bold' },
-  name: { fontSize: 22, fontWeight: 'bold', color: '#1a1a1a' },
-  profession: { fontSize: 16, color: '#555', marginBottom: 8 },
-  badge: { backgroundColor: '#e0e0e0', borderRadius: 6, paddingHorizontal: 10, paddingVertical: 4 },
-  badgeText: { fontSize: 13, color: '#666' },
-  content: { padding: 16 },
-  sectionTitle: { fontSize: 14, fontWeight: '600', color: '#999', marginTop: 16, marginBottom: 8, textTransform: 'uppercase' },
-  description: { fontSize: 15, color: '#333', lineHeight: 22 },
-  contactInfo: { fontSize: 15, color: '#333' },
-  discountBadge: { backgroundColor: '#ecfdf5', borderRadius: 8, padding: 12 },
-  discountText: { fontSize: 14, color: '#16a34a', fontWeight: '600' },
-  editButton: { backgroundColor: '#2563eb', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 24 },
-  editButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  reportButton: { borderWidth: 1, borderColor: '#dc2626', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 12 },
-  reportButtonText: { color: '#dc2626', fontSize: 14 },
-  blockButton: { borderWidth: 1, borderColor: '#666', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 12 },
-  blockButtonText: { color: '#666', fontSize: 14 },
+  container: { flex: 1, backgroundColor: colors.background },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
+  header: { alignItems: 'center', paddingVertical: spacing.xxl, borderBottomWidth: 1, borderBottomColor: colors.divider },
+  avatar: { width: 88, height: 88, borderRadius: 44, marginBottom: spacing.md, borderWidth: 1.5, borderColor: colors.gold },
+  avatarPlaceholder: { backgroundColor: colors.surfaceElevated, justifyContent: 'center', alignItems: 'center' },
+  avatarText: { color: colors.gold, fontSize: 32, fontWeight: '200' },
+  name: { ...typography.displayMedium, fontSize: 22, marginBottom: 4 },
+  profession: { ...typography.body, marginBottom: spacing.sm },
+  badge: { backgroundColor: colors.goldSubtle, borderRadius: 4, paddingHorizontal: 10, paddingVertical: 4 },
+  badgeText: { fontSize: 12, color: colors.gold, letterSpacing: 0.5, fontWeight: '500' },
+  content: { padding: spacing.lg },
+  sectionTitle: { ...typography.caption, letterSpacing: 2, color: colors.textMuted, marginTop: spacing.lg, marginBottom: spacing.sm },
+  description: { ...typography.body, lineHeight: 24 },
+  contactInfo: { ...typography.body, color: colors.textPrimary },
+  discountBadge: { backgroundColor: colors.goldSubtle, borderRadius: 8, padding: spacing.md },
+  discountText: { fontSize: 14, color: colors.success, fontWeight: '500' },
+  editButton: { borderWidth: 1, borderColor: colors.gold, borderRadius: 4, padding: 16, alignItems: 'center', marginTop: spacing.xl },
+  editButtonText: { color: colors.gold, fontSize: 12, fontWeight: '500', letterSpacing: 2 },
+  reportButton: { borderWidth: 1, borderColor: colors.error, borderRadius: 4, padding: 16, alignItems: 'center', marginTop: spacing.md },
+  reportButtonText: { color: colors.error, fontSize: 13 },
+  blockButton: { borderWidth: 1, borderColor: colors.textMuted, borderRadius: 4, padding: 16, alignItems: 'center', marginTop: spacing.sm },
+  blockButtonText: { color: colors.textMuted, fontSize: 13 },
 });

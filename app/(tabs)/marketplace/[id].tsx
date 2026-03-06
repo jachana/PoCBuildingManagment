@@ -4,11 +4,12 @@ import { Image } from 'expo-image';
 import { useState } from 'react';
 import { usePostQuery, useUpdatePost } from '@/hooks/usePosts';
 import { useAuth } from '@/hooks/useAuth';
+import { colors, spacing, typography } from '@/theme';
 
 const { width } = Dimensions.get('window');
 
 const CATEGORY_LABELS: Record<string, string> = {
-  FURNITURE: 'Muebles', ELECTRONICS: 'Electrónica', HOME_APPLIANCES: 'Electrodomésticos',
+  FURNITURE: 'Muebles', ELECTRONICS: 'Electronica', HOME_APPLIANCES: 'Electrodomesticos',
   CLOTHING: 'Ropa', SPORTS: 'Deportes', BOOKS: 'Libros', MOVING_ITEMS: 'Mudanza', OTHER: 'Otro',
 };
 
@@ -21,16 +22,16 @@ export default function PostDetailScreen() {
   const [imageIndex, setImageIndex] = useState(0);
 
   if (isLoading || !post) {
-    return <View style={styles.center}><Text>Cargando...</Text></View>;
+    return <View style={styles.center}><Text style={{ color: colors.textMuted }}>Cargando...</Text></View>;
   }
 
   const isOwner = user?.id === post.author.id;
 
   const handleMarkSold = () => {
-    Alert.alert('Marcar como vendido', '¿Estás seguro?', [
+    Alert.alert('Marcar como vendido', 'Estas seguro?', [
       { text: 'Cancelar', style: 'cancel' },
       {
-        text: 'Sí, vendido',
+        text: 'Si, vendido',
         onPress: () => updatePost.mutate(
           { id: post.id, data: { status: 'SOLD' } },
           { onSuccess: () => router.back() },
@@ -62,24 +63,25 @@ export default function PostDetailScreen() {
           <Text style={styles.badgeText}>{CATEGORY_LABELS[post.category] || post.category}</Text>
         </View>
         <Text style={styles.description}>{post.description}</Text>
+        <View style={styles.divider} />
         <View style={styles.authorRow}>
-          <Text style={styles.authorLabel}>Publicado por</Text>
+          <Text style={styles.authorLabel}>PUBLICADO POR</Text>
           <Text style={styles.authorName}>{post.author.displayName}</Text>
         </View>
 
         {isOwner && post.status === 'ACTIVE' && (
           <TouchableOpacity style={styles.soldButton} onPress={handleMarkSold}>
-            <Text style={styles.soldButtonText}>Marcar como vendido</Text>
+            <Text style={styles.soldButtonText}>MARCAR COMO VENDIDO</Text>
           </TouchableOpacity>
         )}
 
         {!isOwner && (
           <>
             <TouchableOpacity style={styles.reportButton} onPress={() => router.push({ pathname: '/report', params: { contentType: 'POST', contentId: post.id } })}>
-              <Text style={styles.reportButtonText}>Reportar publicación</Text>
+              <Text style={styles.reportButtonText}>Reportar publicacion</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.blockButton} onPress={() => {
-              Alert.alert('Bloquear usuario', `¿Bloquear a ${post.author.displayName}?`, [
+              Alert.alert('Bloquear usuario', `Bloquear a ${post.author.displayName}?`, [
                 { text: 'Cancelar', style: 'cancel' },
                 { text: 'Bloquear', style: 'destructive', onPress: async () => {
                   const { blockUser } = await import('@/services/blocks');
@@ -99,25 +101,26 @@ export default function PostDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  image: { width, height: 300 },
-  dots: { flexDirection: 'row', justifyContent: 'center', paddingVertical: 8 },
-  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#ddd', marginHorizontal: 4 },
-  dotActive: { backgroundColor: '#2563eb' },
-  content: { padding: 16 },
-  price: { fontSize: 28, fontWeight: 'bold', color: '#2563eb', marginBottom: 8 },
-  title: { fontSize: 22, fontWeight: '600', color: '#1a1a1a', marginBottom: 8 },
-  badge: { backgroundColor: '#f0f0f0', borderRadius: 6, paddingHorizontal: 10, paddingVertical: 4, alignSelf: 'flex-start', marginBottom: 16 },
-  badgeText: { fontSize: 13, color: '#666' },
-  description: { fontSize: 15, color: '#333', lineHeight: 22, marginBottom: 16 },
-  authorRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 24 },
-  authorLabel: { fontSize: 13, color: '#999', marginRight: 8 },
-  authorName: { fontSize: 14, fontWeight: '600', color: '#333' },
-  soldButton: { backgroundColor: '#16a34a', borderRadius: 12, padding: 16, alignItems: 'center', marginBottom: 12 },
-  soldButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  reportButton: { borderWidth: 1, borderColor: '#dc2626', borderRadius: 12, padding: 16, alignItems: 'center' },
-  reportButtonText: { color: '#dc2626', fontSize: 14 },
-  blockButton: { borderWidth: 1, borderColor: '#666', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 12 },
-  blockButtonText: { color: '#666', fontSize: 14 },
+  container: { flex: 1, backgroundColor: colors.background },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
+  image: { width, height: 320 },
+  dots: { flexDirection: 'row', justifyContent: 'center', paddingVertical: spacing.sm },
+  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.textMuted, marginHorizontal: 3 },
+  dotActive: { backgroundColor: colors.gold },
+  content: { padding: spacing.lg },
+  price: { ...typography.price, fontSize: 28, marginBottom: spacing.sm },
+  title: { ...typography.displayMedium, fontSize: 22, marginBottom: spacing.sm },
+  badge: { backgroundColor: colors.goldSubtle, borderRadius: 4, paddingHorizontal: 10, paddingVertical: 4, alignSelf: 'flex-start', marginBottom: spacing.lg },
+  badgeText: { fontSize: 12, color: colors.gold, letterSpacing: 0.5, fontWeight: '500' },
+  description: { ...typography.body, lineHeight: 24, marginBottom: spacing.md },
+  divider: { height: 1, backgroundColor: colors.divider, marginVertical: spacing.md },
+  authorRow: { marginBottom: spacing.lg },
+  authorLabel: { ...typography.caption, letterSpacing: 2, marginBottom: 4 },
+  authorName: { ...typography.heading, fontSize: 15 },
+  soldButton: { borderWidth: 1, borderColor: colors.success, borderRadius: 4, padding: 16, alignItems: 'center', marginBottom: spacing.sm },
+  soldButtonText: { color: colors.success, fontSize: 12, fontWeight: '500', letterSpacing: 2 },
+  reportButton: { borderWidth: 1, borderColor: colors.error, borderRadius: 4, padding: 16, alignItems: 'center' },
+  reportButtonText: { color: colors.error, fontSize: 13 },
+  blockButton: { borderWidth: 1, borderColor: colors.textMuted, borderRadius: 4, padding: 16, alignItems: 'center', marginTop: spacing.sm },
+  blockButtonText: { color: colors.textMuted, fontSize: 13 },
 });

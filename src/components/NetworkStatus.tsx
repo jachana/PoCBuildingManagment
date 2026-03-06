@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import NetInfo from '@react-native-community/netinfo';
+import { colors, spacing } from '@/theme';
 
 export function NetworkStatus() {
   const [isConnected, setIsConnected] = useState(true);
@@ -16,20 +17,21 @@ export function NetworkStatus() {
 
   return (
     <View style={styles.banner}>
-      <Text style={styles.text}>Sin conexión a internet</Text>
+      <Text style={styles.text}>SIN CONEXION</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   banner: {
-    backgroundColor: '#ef4444',
-    paddingVertical: 6,
+    backgroundColor: colors.error,
+    paddingVertical: spacing.xs + 2,
     alignItems: 'center',
   },
   text: {
-    color: '#fff',
-    fontSize: 13,
-    fontWeight: '600',
+    color: colors.textPrimary,
+    fontSize: 11,
+    fontWeight: '500',
+    letterSpacing: 2,
   },
 });

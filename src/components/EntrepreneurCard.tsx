@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { EntrepreneurProfile } from '@/models/entrepreneur';
+import { colors, spacing, typography } from '@/theme';
 
 interface Props {
   profile: EntrepreneurProfile;
@@ -8,14 +9,14 @@ interface Props {
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  LEGAL: 'Legal', HEALTH: 'Salud', DESIGN: 'Diseño', COACHING: 'Coaching',
-  PHOTOGRAPHY: 'Fotografía', EDUCATION: 'Educación', TECHNOLOGY: 'Tecnología',
+  LEGAL: 'Legal', HEALTH: 'Salud', DESIGN: 'Diseno', COACHING: 'Coaching',
+  PHOTOGRAPHY: 'Fotografia', EDUCATION: 'Educacion', TECHNOLOGY: 'Tecnologia',
   BEAUTY: 'Belleza', FITNESS: 'Fitness', OTHER: 'Otro',
 };
 
 export default function EntrepreneurCard({ profile, onPress }: Props) {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       <View style={styles.row}>
         {profile.avatarUrl ? (
           <Image source={{ uri: profile.avatarUrl }} style={styles.avatar} contentFit="cover" />
@@ -35,7 +36,8 @@ export default function EntrepreneurCard({ profile, onPress }: Props) {
       <Text style={styles.description} numberOfLines={2}>{profile.description}</Text>
       {profile.residentDiscount && (
         <View style={styles.discountBadge}>
-          <Text style={styles.discountText}>Descuento residentes: {profile.residentDiscount}</Text>
+          <Text style={styles.discountLabel}>DESCUENTO RESIDENTES</Text>
+          <Text style={styles.discountText}>{profile.residentDiscount}</Text>
         </View>
       )}
     </TouchableOpacity>
@@ -44,20 +46,45 @@ export default function EntrepreneurCard({ profile, onPress }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff', borderRadius: 12, padding: 16, marginHorizontal: 16,
-    marginBottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1, shadowRadius: 4, elevation: 2,
+    backgroundColor: colors.surface,
+    borderRadius: 8,
+    padding: spacing.md,
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.surfaceBorder,
   },
-  row: { flexDirection: 'row', marginBottom: 12 },
-  avatar: { width: 48, height: 48, borderRadius: 24, marginRight: 12 },
-  avatarPlaceholder: { backgroundColor: '#2563eb', justifyContent: 'center', alignItems: 'center' },
-  avatarText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  row: { flexDirection: 'row', marginBottom: spacing.sm },
+  avatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    marginRight: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.surfaceBorder,
+  },
+  avatarPlaceholder: { backgroundColor: colors.surfaceElevated, justifyContent: 'center', alignItems: 'center' },
+  avatarText: { color: colors.gold, fontSize: 20, fontWeight: '200' },
   info: { flex: 1 },
-  name: { fontSize: 16, fontWeight: '600', color: '#1a1a1a' },
-  profession: { fontSize: 14, color: '#555', marginBottom: 4 },
-  badge: { backgroundColor: '#f0f0f0', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start' },
-  badgeText: { fontSize: 12, color: '#666' },
-  description: { fontSize: 14, color: '#555', lineHeight: 20, marginBottom: 8 },
-  discountBadge: { backgroundColor: '#ecfdf5', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, alignSelf: 'flex-start' },
-  discountText: { fontSize: 12, color: '#16a34a', fontWeight: '600' },
+  name: { ...typography.heading, fontSize: 16, marginBottom: 2 },
+  profession: { ...typography.body, fontSize: 13, marginBottom: 6 },
+  badge: {
+    backgroundColor: colors.goldSubtle,
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    alignSelf: 'flex-start',
+  },
+  badgeText: { fontSize: 11, color: colors.gold, letterSpacing: 0.5, fontWeight: '500' },
+  description: { ...typography.body, marginBottom: spacing.sm },
+  discountBadge: {
+    borderTopWidth: 1,
+    borderTopColor: colors.divider,
+    paddingTop: spacing.sm,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  discountLabel: { ...typography.caption, letterSpacing: 1, color: colors.success },
+  discountText: { ...typography.body, fontSize: 13, color: colors.success, fontWeight: '500' },
 });

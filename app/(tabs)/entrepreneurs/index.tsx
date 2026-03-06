@@ -4,12 +4,13 @@ import { useRouter } from 'expo-router';
 import EntrepreneurCard from '@/components/EntrepreneurCard';
 import CategoryFilter from '@/components/CategoryFilter';
 import { useEntrepreneursQuery } from '@/hooks/useEntrepreneurs';
+import { colors, spacing, typography } from '@/theme';
 
 const CATEGORIES = [
   { value: 'LEGAL', label: 'Legal' }, { value: 'HEALTH', label: 'Salud' },
-  { value: 'DESIGN', label: 'Diseño' }, { value: 'COACHING', label: 'Coaching' },
-  { value: 'PHOTOGRAPHY', label: 'Fotografía' }, { value: 'EDUCATION', label: 'Educación' },
-  { value: 'TECHNOLOGY', label: 'Tecnología' }, { value: 'BEAUTY', label: 'Belleza' },
+  { value: 'DESIGN', label: 'Diseno' }, { value: 'COACHING', label: 'Coaching' },
+  { value: 'PHOTOGRAPHY', label: 'Fotografia' }, { value: 'EDUCATION', label: 'Educacion' },
+  { value: 'TECHNOLOGY', label: 'Tecnologia' }, { value: 'BEAUTY', label: 'Belleza' },
   { value: 'FITNESS', label: 'Fitness' }, { value: 'OTHER', label: 'Otro' },
 ];
 
@@ -25,6 +26,9 @@ export default function EntrepreneursScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>EMPRENDEDORES</Text>
+      </View>
       <CategoryFilter categories={CATEGORIES} selected={category} onSelect={setCategory} />
       <FlatList
         data={items}
@@ -37,7 +41,7 @@ export default function EntrepreneursScreen() {
         onRefresh={() => refetch()}
         refreshing={isLoading}
         ListEmptyComponent={!isLoading ? <View style={styles.empty}><Text style={styles.emptyText}>No hay emprendedores</Text></View> : null}
-        ListFooterComponent={isFetchingNextPage ? <ActivityIndicator style={styles.loader} /> : null}
+        ListFooterComponent={isFetchingNextPage ? <ActivityIndicator color={colors.gold} style={styles.loader} /> : null}
       />
       <TouchableOpacity style={styles.fab} onPress={() => router.push('/(tabs)/entrepreneurs/edit')}>
         <Text style={styles.fabText}>+</Text>
@@ -47,15 +51,17 @@ export default function EntrepreneursScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  container: { flex: 1, backgroundColor: colors.background },
+  header: { paddingHorizontal: spacing.lg, paddingTop: spacing.xxl, paddingBottom: spacing.md },
+  headerTitle: { ...typography.subheading, fontSize: 16 },
   empty: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 100 },
-  emptyText: { fontSize: 16, color: '#999' },
-  loader: { padding: 16 },
+  emptyText: { ...typography.body, color: colors.textMuted },
+  loader: { padding: spacing.md },
   fab: {
-    position: 'absolute', bottom: 24, right: 24, width: 56, height: 56,
-    borderRadius: 28, backgroundColor: '#2563eb', justifyContent: 'center',
-    alignItems: 'center', elevation: 4, shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 4,
+    position: 'absolute', bottom: 24, right: 24, width: 52, height: 52,
+    borderRadius: 26, backgroundColor: colors.gold, justifyContent: 'center',
+    alignItems: 'center', elevation: 4, shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 8,
   },
-  fabText: { color: '#fff', fontSize: 28, lineHeight: 30 },
+  fabText: { color: colors.background, fontSize: 24, fontWeight: '300' },
 });

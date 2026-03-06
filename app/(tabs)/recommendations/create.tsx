@@ -4,12 +4,13 @@ import { useRouter } from 'expo-router';
 import RatingStars from '@/components/RatingStars';
 import { useCreateRecommendation } from '@/hooks/useRecommendations';
 import { RecommendationCategory } from '@/models/recommendation';
+import { colors, spacing, typography } from '@/theme';
 
 const CATEGORIES: Array<{ value: RecommendationCategory; label: string }> = [
   { value: 'NANNY', label: 'Nana' }, { value: 'TRANSPORTATION', label: 'Transporte' },
   { value: 'DOG_WALKER', label: 'Paseador' }, { value: 'DECORATOR', label: 'Decorador' },
   { value: 'ELECTRICIAN', label: 'Electricista' }, { value: 'GARDENER', label: 'Jardinero' },
-  { value: 'PERSONAL_TRAINER', label: 'Trainer' }, { value: 'PLUMBER', label: 'Gasf\u00edter' },
+  { value: 'PERSONAL_TRAINER', label: 'Trainer' }, { value: 'PLUMBER', label: 'Gasfiter' },
   { value: 'CLEANER', label: 'Aseo' }, { value: 'OTHER', label: 'Otro' },
 ];
 
@@ -24,13 +25,13 @@ export default function CreateRecommendationScreen() {
 
   const handleSubmit = () => {
     if (!serviceName.trim() || !comment.trim() || rating === 0) {
-      Alert.alert('Error', 'Completa nombre, calificaci\u00f3n y comentario');
+      Alert.alert('Error', 'Completa nombre, calificacion y comentario');
       return;
     }
     createMutation.mutate(
       { serviceName: serviceName.trim(), category, rating, comment: comment.trim(), contactInfo: contactInfo.trim() || undefined },
       {
-        onSuccess: () => { Alert.alert('Publicado', 'Tu recomendaci\u00f3n ha sido publicada'); router.back(); },
+        onSuccess: () => { Alert.alert('Publicado', 'Tu recomendacion ha sido publicada'); router.back(); },
         onError: (err) => Alert.alert('Error', err.message),
       },
     );
@@ -39,29 +40,34 @@ export default function CreateRecommendationScreen() {
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.label}>Nombre del servicio *</Text>
-        <TextInput style={styles.input} value={serviceName} onChangeText={setServiceName} placeholder="Ej: Mar\u00eda Gonz\u00e1lez - Nana" maxLength={100} />
+        <Text style={styles.screenTitle}>NUEVA RECOMENDACION</Text>
+        <View style={styles.titleDivider} />
 
-        <Text style={styles.label}>Calificaci\u00f3n *</Text>
-        <RatingStars rating={rating} interactive onRate={setRating} size={32} />
+        <Text style={styles.label}>NOMBRE DEL SERVICIO</Text>
+        <TextInput style={styles.input} value={serviceName} onChangeText={setServiceName} placeholder="Ej: Maria Gonzalez - Nana" placeholderTextColor={colors.textMuted} maxLength={100} />
 
-        <Text style={styles.label}>Categor\u00eda</Text>
+        <Text style={styles.label}>CALIFICACION</Text>
+        <View style={{ marginVertical: spacing.sm }}>
+          <RatingStars rating={rating} interactive onRate={setRating} size={32} />
+        </View>
+
+        <Text style={styles.label}>CATEGORIA</Text>
         <View style={styles.categoryGrid}>
           {CATEGORIES.map((cat) => (
             <TouchableOpacity key={cat.value} style={[styles.categoryBtn, category === cat.value && styles.categoryBtnSelected]} onPress={() => setCategory(cat.value)}>
-              <Text style={[styles.categoryBtnText, category === cat.value && styles.categoryBtnTextSelected]}>{cat.label}</Text>
+              <Text style={[styles.categoryBtnText, category === cat.value && styles.categoryBtnTextSelected]}>{cat.label.toUpperCase()}</Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        <Text style={styles.label}>Comentario *</Text>
-        <TextInput style={[styles.input, styles.textArea]} value={comment} onChangeText={setComment} placeholder="Describe tu experiencia..." multiline numberOfLines={4} maxLength={500} />
+        <Text style={styles.label}>COMENTARIO</Text>
+        <TextInput style={[styles.input, styles.textArea]} value={comment} onChangeText={setComment} placeholder="Describe tu experiencia..." placeholderTextColor={colors.textMuted} multiline numberOfLines={4} maxLength={500} />
 
-        <Text style={styles.label}>Contacto (opcional)</Text>
-        <TextInput style={styles.input} value={contactInfo} onChangeText={setContactInfo} placeholder="Tel\u00e9fono, email o web" />
+        <Text style={styles.label}>CONTACTO (OPCIONAL)</Text>
+        <TextInput style={styles.input} value={contactInfo} onChangeText={setContactInfo} placeholder="Telefono, email o web" placeholderTextColor={colors.textMuted} />
 
         <TouchableOpacity style={[styles.submitBtn, createMutation.isPending && styles.submitBtnDisabled]} onPress={handleSubmit} disabled={createMutation.isPending}>
-          <Text style={styles.submitBtnText}>{createMutation.isPending ? 'Publicando...' : 'Publicar recomendaci\u00f3n'}</Text>
+          <Text style={styles.submitBtnText}>{createMutation.isPending ? 'PUBLICANDO...' : 'PUBLICAR'}</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -69,17 +75,26 @@ export default function CreateRecommendationScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  scroll: { padding: 16 },
-  label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6, marginTop: 12 },
-  input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 12, padding: 14, fontSize: 16, backgroundColor: '#f9f9f9' },
+  container: { flex: 1, backgroundColor: colors.background },
+  scroll: { padding: spacing.lg },
+  screenTitle: { ...typography.subheading, fontSize: 16, textAlign: 'center', marginBottom: spacing.sm },
+  titleDivider: { width: 40, height: 1, backgroundColor: colors.gold, alignSelf: 'center', marginBottom: spacing.lg },
+  label: { ...typography.caption, letterSpacing: 2, color: colors.textMuted, marginBottom: 6, marginTop: spacing.md },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surfaceBorder,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: colors.textPrimary,
+    fontWeight: '300',
+  },
   textArea: { height: 100, textAlignVertical: 'top' },
-  categoryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  categoryBtn: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#f0f0f0' },
-  categoryBtnSelected: { backgroundColor: '#2563eb' },
-  categoryBtnText: { fontSize: 13, color: '#666' },
-  categoryBtnTextSelected: { color: '#fff', fontWeight: '600' },
-  submitBtn: { backgroundColor: '#2563eb', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 24, marginBottom: 40 },
-  submitBtnDisabled: { opacity: 0.6 },
-  submitBtnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  categoryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  categoryBtn: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 4, borderWidth: 1, borderColor: colors.surfaceBorder },
+  categoryBtnSelected: { backgroundColor: colors.goldSubtle, borderColor: colors.gold },
+  categoryBtnText: { fontSize: 11, color: colors.textMuted, letterSpacing: 1 },
+  categoryBtnTextSelected: { color: colors.gold, fontWeight: '500' },
+  submitBtn: { borderWidth: 1, borderColor: colors.gold, borderRadius: 4, padding: 16, alignItems: 'center', marginTop: spacing.xl, marginBottom: 40 },
+  submitBtnDisabled: { opacity: 0.4 },
+  submitBtnText: { color: colors.gold, fontSize: 13, fontWeight: '500', letterSpacing: 2 },
 });

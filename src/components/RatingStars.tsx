@@ -1,4 +1,5 @@
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { colors } from '@/theme';
 
 interface RatingStarsProps {
   rating: number;
@@ -34,6 +35,6 @@ export default function RatingStars({ rating, interactive = false, onRate, size 
 const styles = StyleSheet.create({
   container: { flexDirection: 'row', alignItems: 'center' },
   star: { marginRight: 2 },
-  starText: { color: '#ddd' },
-  starFilled: { color: '#f59e0b' },
+  starText: { color: colors.textMuted },
+  starFilled: { color: colors.gold },
 });

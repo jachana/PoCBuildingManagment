@@ -4,12 +4,13 @@ import { useRouter } from 'expo-router';
 import { useCreateProfile, useUpdateProfile, useEntrepreneursQuery } from '@/hooks/useEntrepreneurs';
 import { useAuth } from '@/hooks/useAuth';
 import { EntrepreneurCategory } from '@/models/entrepreneur';
+import { colors, spacing, typography } from '@/theme';
 
 const CATEGORIES: Array<{ value: EntrepreneurCategory; label: string }> = [
   { value: 'LEGAL', label: 'Legal' }, { value: 'HEALTH', label: 'Salud' },
-  { value: 'DESIGN', label: 'Diseño' }, { value: 'COACHING', label: 'Coaching' },
-  { value: 'PHOTOGRAPHY', label: 'Fotografía' }, { value: 'EDUCATION', label: 'Educación' },
-  { value: 'TECHNOLOGY', label: 'Tecnología' }, { value: 'BEAUTY', label: 'Belleza' },
+  { value: 'DESIGN', label: 'Diseno' }, { value: 'COACHING', label: 'Coaching' },
+  { value: 'PHOTOGRAPHY', label: 'Fotografia' }, { value: 'EDUCATION', label: 'Educacion' },
+  { value: 'TECHNOLOGY', label: 'Tecnologia' }, { value: 'BEAUTY', label: 'Belleza' },
   { value: 'FITNESS', label: 'Fitness' }, { value: 'OTHER', label: 'Otro' },
 ];
 
@@ -40,7 +41,7 @@ export default function EditEntrepreneurScreen() {
 
   const handleSubmit = () => {
     if (!profession.trim() || !description.trim() || !contactInfo.trim()) {
-      Alert.alert('Error', 'Completa profesión, descripción y contacto');
+      Alert.alert('Error', 'Completa profesion, descripcion y contacto');
       return;
     }
     const formData = {
@@ -72,31 +73,32 @@ export default function EditEntrepreneurScreen() {
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.title}>{existingProfile ? 'Editar perfil' : 'Crear perfil de emprendedor'}</Text>
+        <Text style={styles.screenTitle}>{existingProfile ? 'EDITAR PERFIL' : 'CREAR PERFIL'}</Text>
+        <View style={styles.titleDivider} />
 
-        <Text style={styles.label}>Profesión *</Text>
-        <TextInput style={styles.input} value={profession} onChangeText={setProfession} placeholder="Ej: Abogado, Diseñadora Interior" maxLength={100} />
+        <Text style={styles.label}>PROFESION</Text>
+        <TextInput style={styles.input} value={profession} onChangeText={setProfession} placeholder="Ej: Abogado, Disenadora Interior" placeholderTextColor={colors.textMuted} maxLength={100} />
 
-        <Text style={styles.label}>Categoría</Text>
+        <Text style={styles.label}>CATEGORIA</Text>
         <View style={styles.categoryGrid}>
           {CATEGORIES.map((cat) => (
             <TouchableOpacity key={cat.value} style={[styles.categoryBtn, category === cat.value && styles.categoryBtnSelected]} onPress={() => setCategory(cat.value)}>
-              <Text style={[styles.categoryBtnText, category === cat.value && styles.categoryBtnTextSelected]}>{cat.label}</Text>
+              <Text style={[styles.categoryBtnText, category === cat.value && styles.categoryBtnTextSelected]}>{cat.label.toUpperCase()}</Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        <Text style={styles.label}>Descripción *</Text>
-        <TextInput style={[styles.input, styles.textArea]} value={description} onChangeText={setDescription} placeholder="Describe tus servicios..." multiline numberOfLines={4} maxLength={1000} />
+        <Text style={styles.label}>DESCRIPCION</Text>
+        <TextInput style={[styles.input, styles.textArea]} value={description} onChangeText={setDescription} placeholder="Describe tus servicios..." placeholderTextColor={colors.textMuted} multiline numberOfLines={4} maxLength={1000} />
 
-        <Text style={styles.label}>Contacto *</Text>
-        <TextInput style={styles.input} value={contactInfo} onChangeText={setContactInfo} placeholder="Teléfono, email o web" />
+        <Text style={styles.label}>CONTACTO</Text>
+        <TextInput style={styles.input} value={contactInfo} onChangeText={setContactInfo} placeholder="Telefono, email o web" placeholderTextColor={colors.textMuted} />
 
-        <Text style={styles.label}>Descuento para residentes (opcional)</Text>
-        <TextInput style={styles.input} value={residentDiscount} onChangeText={setResidentDiscount} placeholder="Ej: 20% de descuento" maxLength={200} />
+        <Text style={styles.label}>DESCUENTO RESIDENTES (OPCIONAL)</Text>
+        <TextInput style={styles.input} value={residentDiscount} onChangeText={setResidentDiscount} placeholder="Ej: 20% de descuento" placeholderTextColor={colors.textMuted} maxLength={200} />
 
         <TouchableOpacity style={[styles.submitBtn, isPending && styles.submitBtnDisabled]} onPress={handleSubmit} disabled={isPending}>
-          <Text style={styles.submitBtnText}>{isPending ? 'Guardando...' : existingProfile ? 'Guardar cambios' : 'Crear perfil'}</Text>
+          <Text style={styles.submitBtnText}>{isPending ? 'GUARDANDO...' : existingProfile ? 'GUARDAR CAMBIOS' : 'CREAR PERFIL'}</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -104,18 +106,26 @@ export default function EditEntrepreneurScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  scroll: { padding: 16 },
-  title: { fontSize: 22, fontWeight: 'bold', color: '#1a1a1a', marginBottom: 16 },
-  label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6, marginTop: 12 },
-  input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 12, padding: 14, fontSize: 16, backgroundColor: '#f9f9f9' },
+  container: { flex: 1, backgroundColor: colors.background },
+  scroll: { padding: spacing.lg },
+  screenTitle: { ...typography.subheading, fontSize: 16, textAlign: 'center', marginBottom: spacing.sm },
+  titleDivider: { width: 40, height: 1, backgroundColor: colors.gold, alignSelf: 'center', marginBottom: spacing.lg },
+  label: { ...typography.caption, letterSpacing: 2, color: colors.textMuted, marginBottom: 6, marginTop: spacing.md },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surfaceBorder,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: colors.textPrimary,
+    fontWeight: '300',
+  },
   textArea: { height: 120, textAlignVertical: 'top' },
-  categoryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  categoryBtn: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#f0f0f0' },
-  categoryBtnSelected: { backgroundColor: '#2563eb' },
-  categoryBtnText: { fontSize: 13, color: '#666' },
-  categoryBtnTextSelected: { color: '#fff', fontWeight: '600' },
-  submitBtn: { backgroundColor: '#2563eb', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 24, marginBottom: 40 },
-  submitBtnDisabled: { opacity: 0.6 },
-  submitBtnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  categoryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  categoryBtn: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 4, borderWidth: 1, borderColor: colors.surfaceBorder },
+  categoryBtnSelected: { backgroundColor: colors.goldSubtle, borderColor: colors.gold },
+  categoryBtnText: { fontSize: 11, color: colors.textMuted, letterSpacing: 1 },
+  categoryBtnTextSelected: { color: colors.gold, fontWeight: '500' },
+  submitBtn: { borderWidth: 1, borderColor: colors.gold, borderRadius: 4, padding: 16, alignItems: 'center', marginTop: spacing.xl, marginBottom: 40 },
+  submitBtnDisabled: { opacity: 0.4 },
+  submitBtnText: { color: colors.gold, fontSize: 13, fontWeight: '500', letterSpacing: 2 },
 });

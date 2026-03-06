@@ -5,11 +5,12 @@ import ImagePickerComponent from '@/components/ImagePicker';
 import { useCreatePost } from '@/hooks/usePosts';
 import { getPresignedUrl, uploadImage } from '@/services/uploads';
 import { PostCategory } from '@/models/post';
+import { colors, spacing, typography } from '@/theme';
 
 const CATEGORIES: Array<{ value: PostCategory; label: string }> = [
   { value: 'FURNITURE', label: 'Muebles' },
-  { value: 'ELECTRONICS', label: 'Electrónica' },
-  { value: 'HOME_APPLIANCES', label: 'Electrodomésticos' },
+  { value: 'ELECTRONICS', label: 'Electronica' },
+  { value: 'HOME_APPLIANCES', label: 'Electrodomesticos' },
   { value: 'CLOTHING', label: 'Ropa' },
   { value: 'SPORTS', label: 'Deportes' },
   { value: 'BOOKS', label: 'Libros' },
@@ -51,7 +52,7 @@ export default function CreatePostScreen() {
         },
       );
     } catch (err) {
-      Alert.alert('Error', 'No se pudieron subir las imágenes');
+      Alert.alert('Error', 'No se pudieron subir las imagenes');
     } finally {
       setUploading(false);
     }
@@ -60,19 +61,22 @@ export default function CreatePostScreen() {
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.label}>Imágenes *</Text>
+        <Text style={styles.screenTitle}>NUEVA PUBLICACION</Text>
+        <View style={styles.titleDivider} />
+
+        <Text style={styles.label}>IMAGENES</Text>
         <ImagePickerComponent images={images} onImagesChange={setImages} maxImages={5} />
 
-        <Text style={styles.label}>Título *</Text>
-        <TextInput style={styles.input} value={title} onChangeText={setTitle} placeholder="Ej: Mesa de comedor" maxLength={100} />
+        <Text style={styles.label}>TITULO</Text>
+        <TextInput style={styles.input} value={title} onChangeText={setTitle} placeholder="Ej: Mesa de comedor" placeholderTextColor={colors.textMuted} maxLength={100} />
 
-        <Text style={styles.label}>Descripción *</Text>
-        <TextInput style={[styles.input, styles.textArea]} value={description} onChangeText={setDescription} placeholder="Describe tu producto..." multiline numberOfLines={4} maxLength={1000} />
+        <Text style={styles.label}>DESCRIPCION</Text>
+        <TextInput style={[styles.input, styles.textArea]} value={description} onChangeText={setDescription} placeholder="Describe tu producto..." placeholderTextColor={colors.textMuted} multiline numberOfLines={4} maxLength={1000} />
 
-        <Text style={styles.label}>Precio (CLP) *</Text>
-        <TextInput style={styles.input} value={price} onChangeText={setPrice} placeholder="50000" keyboardType="numeric" />
+        <Text style={styles.label}>PRECIO (CLP)</Text>
+        <TextInput style={styles.input} value={price} onChangeText={setPrice} placeholder="50000" placeholderTextColor={colors.textMuted} keyboardType="numeric" />
 
-        <Text style={styles.label}>Categoría</Text>
+        <Text style={styles.label}>CATEGORIA</Text>
         <View style={styles.categoryGrid}>
           {CATEGORIES.map((cat) => (
             <TouchableOpacity
@@ -81,7 +85,7 @@ export default function CreatePostScreen() {
               onPress={() => setCategory(cat.value)}
             >
               <Text style={[styles.categoryBtnText, category === cat.value && styles.categoryBtnTextSelected]}>
-                {cat.label}
+                {cat.label.toUpperCase()}
               </Text>
             </TouchableOpacity>
           ))}
@@ -93,7 +97,7 @@ export default function CreatePostScreen() {
           disabled={uploading || createPost.isPending}
         >
           <Text style={styles.submitBtnText}>
-            {uploading ? 'Subiendo imágenes...' : createPost.isPending ? 'Publicando...' : 'Publicar'}
+            {uploading ? 'SUBIENDO IMAGENES...' : createPost.isPending ? 'PUBLICANDO...' : 'PUBLICAR'}
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -102,17 +106,40 @@ export default function CreatePostScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  scroll: { padding: 16 },
-  label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6, marginTop: 12 },
-  input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 12, padding: 14, fontSize: 16, backgroundColor: '#f9f9f9' },
+  container: { flex: 1, backgroundColor: colors.background },
+  scroll: { padding: spacing.lg },
+  screenTitle: { ...typography.subheading, fontSize: 16, textAlign: 'center', marginBottom: spacing.sm },
+  titleDivider: { width: 40, height: 1, backgroundColor: colors.gold, alignSelf: 'center', marginBottom: spacing.lg },
+  label: { ...typography.caption, letterSpacing: 2, color: colors.textMuted, marginBottom: 6, marginTop: spacing.md },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surfaceBorder,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: colors.textPrimary,
+    fontWeight: '300',
+  },
   textArea: { height: 100, textAlignVertical: 'top' },
-  categoryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  categoryBtn: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#f0f0f0' },
-  categoryBtnSelected: { backgroundColor: '#2563eb' },
-  categoryBtnText: { fontSize: 13, color: '#666' },
-  categoryBtnTextSelected: { color: '#fff', fontWeight: '600' },
-  submitBtn: { backgroundColor: '#2563eb', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 24, marginBottom: 40 },
-  submitBtnDisabled: { opacity: 0.6 },
-  submitBtnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  categoryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  categoryBtn: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: colors.surfaceBorder,
+  },
+  categoryBtnSelected: { backgroundColor: colors.goldSubtle, borderColor: colors.gold },
+  categoryBtnText: { fontSize: 11, color: colors.textMuted, letterSpacing: 1 },
+  categoryBtnTextSelected: { color: colors.gold, fontWeight: '500' },
+  submitBtn: {
+    borderWidth: 1,
+    borderColor: colors.gold,
+    borderRadius: 4,
+    padding: 16,
+    alignItems: 'center',
+    marginTop: spacing.xl,
+    marginBottom: 40,
+  },
+  submitBtnDisabled: { opacity: 0.4 },
+  submitBtnText: { color: colors.gold, fontSize: 13, fontWeight: '500', letterSpacing: 2 },
 });
