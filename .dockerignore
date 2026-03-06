@@ -13,3 +13,6 @@ build/
 web-build/
 .specify/
 specs/
+api/
+admin/
+.claude/

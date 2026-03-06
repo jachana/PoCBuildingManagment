@@ -68,6 +68,20 @@ services:
     expose:
       - "80"
 
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        - EXPO_PUBLIC_API_URL=${EXPO_PUBLIC_API_URL}
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      - SERVICE_FQDN_APP=${SERVICE_FQDN_APP}
+    expose:
+      - "80"
+
 volumes:
   pgdata:
   miniodata:

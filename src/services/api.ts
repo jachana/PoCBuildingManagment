@@ -1,26 +1,53 @@
-import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
+
+// Storage abstraction: SecureStore on native, localStorage on web
+const storage = {
+  getItem: async (key: string): Promise<string | null> => {
+    if (Platform.OS === 'web') {
+      return localStorage.getItem(key);
+    }
+    const SecureStore = await import('expo-secure-store');
+    return SecureStore.getItemAsync(key);
+  },
+  setItem: async (key: string, value: string): Promise<void> => {
+    if (Platform.OS === 'web') {
+      localStorage.setItem(key, value);
+      return;
+    }
+    const SecureStore = await import('expo-secure-store');
+    await SecureStore.setItemAsync(key, value);
+  },
+  deleteItem: async (key: string): Promise<void> => {
+    if (Platform.OS === 'web') {
+      localStorage.removeItem(key);
+      return;
+    }
+    const SecureStore = await import('expo-secure-store');
+    await SecureStore.deleteItemAsync(key);
+  },
+};
 
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
 async function getToken(): Promise<string | null> {
-  return SecureStore.getItemAsync('accessToken');
+  return storage.getItem('accessToken');
 }
 
 async function getRefreshToken(): Promise<string | null> {
-  return SecureStore.getItemAsync('refreshToken');
+  return storage.getItem('refreshToken');
 }
 
 async function storeTokens(accessToken: string, refreshToken: string): Promise<void> {
-  await SecureStore.setItemAsync('accessToken', accessToken);
-  await SecureStore.setItemAsync('refreshToken', refreshToken);
+  await storage.setItem('accessToken', accessToken);
+  await storage.setItem('refreshToken', refreshToken);
 }
 
 export async function clearTokens(): Promise<void> {
-  await SecureStore.deleteItemAsync('accessToken');
-  await SecureStore.deleteItemAsync('refreshToken');
+  await storage.deleteItem('accessToken');
+  await storage.deleteItem('refreshToken');
 }
 
 async function refreshAccessToken(): Promise<string | null> {
