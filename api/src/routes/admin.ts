@@ -36,12 +36,13 @@ router.get('/pending-approvals', requireAuth, requireAdmin, async (req: Request,
 // POST /admin/approve/:userId
 router.post('/approve/:userId', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.params.userId } });
+    const userId = req.params.userId as string;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new AppError(404, 'NOT_FOUND', 'User not found');
     if (user.approved) throw new AppError(400, 'VALIDATION_ERROR', 'User already approved');
 
     const updated = await prisma.user.update({
-      where: { id: req.params.userId },
+      where: { id: userId },
       data: { approved: true, role: 'RESIDENT' },
       select: { id: true, email: true, displayName: true, role: true, approved: true },
     });
@@ -54,10 +55,11 @@ router.post('/approve/:userId', requireAuth, requireAdmin, async (req: Request, 
 // POST /admin/reject/:userId
 router.post('/reject/:userId', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.params.userId } });
+    const userId = req.params.userId as string;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new AppError(404, 'NOT_FOUND', 'User not found');
 
-    await prisma.user.delete({ where: { id: req.params.userId } });
+    await prisma.user.delete({ where: { id: userId } });
     res.json({ message: 'User rejected and removed' });
   } catch (err) {
     handleError(res, err);
@@ -67,15 +69,16 @@ router.post('/reject/:userId', requireAuth, requireAdmin, async (req: Request, r
 // POST /admin/block/:userId
 router.post('/block/:userId', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.params.userId } });
+    const userId = req.params.userId as string;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new AppError(404, 'NOT_FOUND', 'User not found');
 
     await prisma.$transaction([
-      prisma.user.update({ where: { id: req.params.userId }, data: { blocked: true } }),
-      prisma.post.updateMany({ where: { authorId: req.params.userId, status: 'ACTIVE' }, data: { hidden: true } }),
-      prisma.recommendation.updateMany({ where: { authorId: req.params.userId }, data: { hidden: true } }),
-      prisma.entrepreneurProfile.updateMany({ where: { userId: req.params.userId }, data: { hidden: true } }),
-      prisma.refreshToken.deleteMany({ where: { userId: req.params.userId } }),
+      prisma.user.update({ where: { id: userId }, data: { blocked: true } }),
+      prisma.post.updateMany({ where: { authorId: userId, status: 'ACTIVE' }, data: { hidden: true } }),
+      prisma.recommendation.updateMany({ where: { authorId: userId }, data: { hidden: true } }),
+      prisma.entrepreneurProfile.updateMany({ where: { userId: userId }, data: { hidden: true } }),
+      prisma.refreshToken.deleteMany({ where: { userId: userId } }),
     ]);
     res.json({ message: 'User blocked' });
   } catch (err) {
@@ -86,11 +89,12 @@ router.post('/block/:userId', requireAuth, requireAdmin, async (req: Request, re
 // POST /admin/unblock/:userId
 router.post('/unblock/:userId', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
+    const userId = req.params.userId as string;
     await prisma.$transaction([
-      prisma.user.update({ where: { id: req.params.userId }, data: { blocked: false } }),
-      prisma.post.updateMany({ where: { authorId: req.params.userId }, data: { hidden: false } }),
-      prisma.recommendation.updateMany({ where: { authorId: req.params.userId }, data: { hidden: false } }),
-      prisma.entrepreneurProfile.updateMany({ where: { userId: req.params.userId }, data: { hidden: false } }),
+      prisma.user.update({ where: { id: userId }, data: { blocked: false } }),
+      prisma.post.updateMany({ where: { authorId: userId }, data: { hidden: false } }),
+      prisma.recommendation.updateMany({ where: { authorId: userId }, data: { hidden: false } }),
+      prisma.entrepreneurProfile.updateMany({ where: { userId: userId }, data: { hidden: false } }),
     ]);
     res.json({ message: 'User unblocked' });
   } catch (err) {
@@ -133,11 +137,12 @@ const reviewSchema = z.object({
 // PATCH /admin/reports/:id
 router.patch('/reports/:id', requireAuth, requireAdmin, validate(reviewSchema), async (req: Request, res: Response) => {
   try {
-    const report = await prisma.report.findUnique({ where: { id: req.params.id } });
+    const id = req.params.id as string;
+    const report = await prisma.report.findUnique({ where: { id } });
     if (!report) throw new AppError(404, 'NOT_FOUND', 'Report not found');
 
     const updated = await prisma.report.update({
-      where: { id: req.params.id },
+      where: { id },
       data: {
         status: req.body.status,
         reviewedById: req.user!.id,

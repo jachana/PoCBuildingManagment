@@ -34,8 +34,9 @@ router.post('/', requireAuth, requireApproved, validate(blockSchema), async (req
 
 router.delete('/:userId', requireAuth, async (req: Request, res: Response) => {
   try {
+    const userId = req.params.userId as string;
     await prisma.userBlock.deleteMany({
-      where: { blockerId: req.user!.id, blockedId: req.params.userId },
+      where: { blockerId: req.user!.id, blockedId: userId },
     });
     res.status(204).send();
   } catch (err) {

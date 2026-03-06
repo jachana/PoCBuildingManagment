@@ -67,8 +67,9 @@ router.get('/', requireAuth, requireApproved, async (req: Request, res: Response
 // GET /recommendations/:id
 router.get('/:id', requireAuth, requireApproved, async (req: Request, res: Response) => {
   try {
+    const id = req.params.id as string;
     const item = await prisma.recommendation.findUnique({
-      where: { id: req.params.id },
+      where: { id },
       include: { author: { select: { id: true, displayName: true, avatarUrl: true, buildingId: true } } },
     });
     if (!item || item.hidden) throw new AppError(404, 'NOT_FOUND', 'Recommendation not found');
@@ -97,14 +98,15 @@ router.post('/', requireAuth, requireApproved, validate(createSchema), async (re
 // PATCH /recommendations/:id
 router.patch('/:id', requireAuth, requireApproved, validate(updateSchema), async (req: Request, res: Response) => {
   try {
-    const existing = await prisma.recommendation.findUnique({ where: { id: req.params.id } });
+    const id = req.params.id as string;
+    const existing = await prisma.recommendation.findUnique({ where: { id } });
     if (!existing) throw new AppError(404, 'NOT_FOUND', 'Recommendation not found');
     if (existing.authorId !== req.user!.id && req.user!.role !== 'ADMIN') {
       throw new AppError(403, 'FORBIDDEN', 'Not authorized');
     }
 
     const item = await prisma.recommendation.update({
-      where: { id: req.params.id },
+      where: { id },
       data: req.body,
       include: { author: { select: { id: true, displayName: true, avatarUrl: true } } },
     });

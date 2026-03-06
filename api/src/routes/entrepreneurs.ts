@@ -64,8 +64,9 @@ router.get('/', requireAuth, requireApproved, async (req: Request, res: Response
 
 router.get('/:id', requireAuth, requireApproved, async (req: Request, res: Response) => {
   try {
+    const id = req.params.id as string;
     const item = await prisma.entrepreneurProfile.findUnique({
-      where: { id: req.params.id },
+      where: { id },
       include: { user: { select: { id: true, displayName: true, avatarUrl: true, buildingId: true } } },
     });
     if (!item || item.hidden) throw new AppError(404, 'NOT_FOUND', 'Profile not found');
@@ -94,13 +95,14 @@ router.post('/', requireAuth, requireApproved, validate(createSchema), async (re
 
 router.patch('/:id', requireAuth, requireApproved, validate(updateSchema), async (req: Request, res: Response) => {
   try {
-    const existing = await prisma.entrepreneurProfile.findUnique({ where: { id: req.params.id } });
+    const id = req.params.id as string;
+    const existing = await prisma.entrepreneurProfile.findUnique({ where: { id } });
     if (!existing) throw new AppError(404, 'NOT_FOUND', 'Profile not found');
     if (existing.userId !== req.user!.id && req.user!.role !== 'ADMIN') {
       throw new AppError(403, 'FORBIDDEN', 'Not authorized');
     }
     const item = await prisma.entrepreneurProfile.update({
-      where: { id: req.params.id },
+      where: { id },
       data: req.body,
       include: { user: { select: { id: true, displayName: true, avatarUrl: true } } },
     });
@@ -112,12 +114,13 @@ router.patch('/:id', requireAuth, requireApproved, validate(updateSchema), async
 
 router.delete('/:id', requireAuth, requireApproved, async (req: Request, res: Response) => {
   try {
-    const existing = await prisma.entrepreneurProfile.findUnique({ where: { id: req.params.id } });
+    const id = req.params.id as string;
+    const existing = await prisma.entrepreneurProfile.findUnique({ where: { id } });
     if (!existing) throw new AppError(404, 'NOT_FOUND', 'Profile not found');
     if (existing.userId !== req.user!.id && req.user!.role !== 'ADMIN') {
       throw new AppError(403, 'FORBIDDEN', 'Not authorized');
     }
-    await prisma.entrepreneurProfile.delete({ where: { id: req.params.id } });
+    await prisma.entrepreneurProfile.delete({ where: { id } });
     res.status(204).send();
   } catch (err) {
     handleError(res, err);

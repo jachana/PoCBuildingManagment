@@ -84,8 +84,9 @@ router.get('/', requireAuth, requireApproved, async (req: Request, res: Response
 // GET /posts/:id - Single post
 router.get('/:id', requireAuth, requireApproved, async (req: Request, res: Response) => {
   try {
+    const id = req.params.id as string;
     const post = await prisma.post.findUnique({
-      where: { id: req.params.id },
+      where: { id },
       include: { author: { select: { id: true, displayName: true, avatarUrl: true, buildingId: true } } },
     });
 
@@ -147,7 +148,8 @@ router.post('/', requireAuth, requireApproved, validate(createPostSchema), async
 // PATCH /posts/:id - Update post
 router.patch('/:id', requireAuth, requireApproved, validate(updatePostSchema), async (req: Request, res: Response) => {
   try {
-    const existing = await prisma.post.findUnique({ where: { id: req.params.id } });
+    const id = req.params.id as string;
+    const existing = await prisma.post.findUnique({ where: { id } });
     if (!existing) throw new AppError(404, 'NOT_FOUND', 'Post not found');
 
     if (existing.authorId !== req.user!.id && req.user!.role !== 'ADMIN') {
@@ -159,7 +161,7 @@ router.patch('/:id', requireAuth, requireApproved, validate(updatePostSchema), a
 
     const post = await prisma.$transaction(async (tx) => {
       const updated = await tx.post.update({
-        where: { id: req.params.id },
+        where: { id },
         data,
         include: { author: { select: { id: true, displayName: true, avatarUrl: true } } },
       });
@@ -184,11 +186,12 @@ router.patch('/:id', requireAuth, requireApproved, validate(updatePostSchema), a
 // DELETE /posts/:id - Admin remove
 router.delete('/:id', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
-    const existing = await prisma.post.findUnique({ where: { id: req.params.id } });
+    const id = req.params.id as string;
+    const existing = await prisma.post.findUnique({ where: { id } });
     if (!existing) throw new AppError(404, 'NOT_FOUND', 'Post not found');
 
     await prisma.$transaction([
-      prisma.post.update({ where: { id: req.params.id }, data: { status: 'REMOVED' } }),
+      prisma.post.update({ where: { id }, data: { status: 'REMOVED' } }),
       prisma.user.update({ where: { id: existing.authorId }, data: { activePostCount: { decrement: 1 } } }),
     ]);
 
