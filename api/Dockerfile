@@ -1,5 +1,6 @@
 FROM node:20-alpine AS build
 WORKDIR /app
+ENV NODE_ENV=development
 COPY package*.json ./
 RUN npm ci
 COPY prisma ./prisma
