@@ -1,10 +1,6 @@
 import { Platform } from 'react-native';
 
-const DEFAULT_API_URL = Platform.OS === 'web'
-  ? 'https://api.bm.latam.juliocode.com/api/v1'
-  : 'http://localhost:3000/api/v1';
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL || DEFAULT_API_URL;
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
 
 // Storage abstraction: SecureStore on native, localStorage on web
 const storage = {
