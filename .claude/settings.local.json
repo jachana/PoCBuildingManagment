@@ -19,7 +19,10 @@
       "Bash(echo PATH=$PATH:*)",
       "Read(//c/Program Files/nodejs/**)",
       "Read(//c/Program Files \\(x86\\)/nodejs/**)",
-      "Read(//c/Users/jacha/AppData/**)"
+      "Read(//c/Users/jacha/AppData/**)",
+      "Bash(npx tsc:*)",
+      "Bash(./node_modules/.bin/tsc:*)",
+      "Bash(npm run:*)"
     ]
   }
 }
