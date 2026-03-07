@@ -8,10 +8,23 @@ function avatar(email: string, size = 200): string {
   return `https://i.pravatar.cc/${size}?u=${encodeURIComponent(email)}`;
 }
 
-// Stable product images from picsum.photos (seed-based = always same image)
-function productImg(seed: string, w = 800, h = 600): string {
-  return `https://picsum.photos/seed/${seed}/${w}/${h}`;
+// Unsplash CDN image helper (stable direct URLs)
+function unsplash(photoId: string, w = 800): string {
+  return `https://images.unsplash.com/photo-${photoId}?w=${w}&fit=crop&q=80`;
 }
+
+// Real product images from Unsplash (matching each listing)
+const IMAGES = {
+  sofa: unsplash('1565330502541-4937be8552e3'),           // gray fabric sectional sofa
+  sofaRoom: unsplash('1757862351841-c6f7ac0b0201'),       // living room with gray sofa
+  tv: unsplash('1574597146034-2f166efd78a2'),              // Samsung flat screen TV
+  bike: unsplash('1532298229144-0ec0c57515c7'),            // black road bike
+  diningTable: unsplash('1620207370579-ae2276efbdbe'),     // wooden dining table
+  movingBoxes: unsplash('1600725935160-f67ee4f6084a'),     // cardboard boxes
+  roomba: unsplash('1647940990395-967898eb0d65'),          // robot vacuum next to couch
+  books: unsplash('1630852722046-d1c0606aefa5'),           // stack of books
+  microwave: unsplash('1589241534732-26031c00f37c'),       // stainless steel microwave
+};
 
 async function main() {
   const passwordHash = await bcrypt.hash('demo123456', 12);
@@ -160,10 +173,7 @@ async function main() {
         description: 'Sofa en excelente estado, color gris, 2 anos de uso. Incluye cojines. Lo vendo porque me cambio a uno mas grande. Se puede ver en el depto.',
         price: 350000,
         category: PostCategory.FURNITURE,
-        images: [
-          productImg('sofa-gris', 800, 600),
-          productImg('sofa-gris-2', 800, 600),
-        ],
+        images: [IMAGES.sofa, IMAGES.sofaRoom],
         authorId: maria.id,
       },
     }),
@@ -173,9 +183,7 @@ async function main() {
         description: 'Television Samsung Crystal UHD 55 pulgadas, modelo 2024. Con control remoto y caja original. Funciona perfectamente.',
         price: 280000,
         category: PostCategory.ELECTRONICS,
-        images: [
-          productImg('samsung-tv-55', 800, 600),
-        ],
+        images: [IMAGES.tv],
         authorId: carlos.id,
       },
     }),
@@ -185,10 +193,7 @@ async function main() {
         description: 'Bicicleta Specialized Allez, talla 54, color negro. Componentes Shimano 105. Incluye luces y candado. Ideal para rodar por el parque.',
         price: 450000,
         category: PostCategory.SPORTS,
-        images: [
-          productImg('road-bike-black', 800, 600),
-          productImg('bike-detail', 800, 600),
-        ],
+        images: [IMAGES.bike],
         authorId: andres.id,
       },
     }),
@@ -198,9 +203,7 @@ async function main() {
         description: 'Mesa de madera maciza de roble, 180x90cm. Muy buen estado. Ideal para departamentos amplios. Solo mesa, sin sillas.',
         price: 200000,
         category: PostCategory.FURNITURE,
-        images: [
-          productImg('dining-table-oak', 800, 600),
-        ],
+        images: [IMAGES.diningTable],
         authorId: valentina.id,
       },
     }),
@@ -210,9 +213,7 @@ async function main() {
         description: 'Set de 20 cajas de carton resistente para mudanza, varios tamanos. Incluye papel de embalaje. Usadas solo una vez.',
         price: 15000,
         category: PostCategory.MOVING_ITEMS,
-        images: [
-          productImg('moving-boxes', 800, 600),
-        ],
+        images: [IMAGES.movingBoxes],
         authorId: camila.id,
       },
     }),
@@ -222,10 +223,7 @@ async function main() {
         description: 'Roomba i7+ con base de autovaciado. 1 ano de uso, funciona perfecto. Incluye filtros extra y repuestos de cepillos.',
         price: 180000,
         category: PostCategory.HOME_APPLIANCES,
-        images: [
-          productImg('roomba-robot', 800, 600),
-          productImg('roomba-base', 800, 600),
-        ],
+        images: [IMAGES.roomba],
         authorId: maria.id,
       },
     }),
@@ -235,9 +233,7 @@ async function main() {
         description: '8 libros de Garcia Marquez en excelente estado. Incluye Cien Anos de Soledad, El Amor en los Tiempos del Colera, Cronica de una Muerte Anunciada y mas.',
         price: 25000,
         category: PostCategory.BOOKS,
-        images: [
-          productImg('book-collection', 800, 600),
-        ],
+        images: [IMAGES.books],
         authorId: andres.id,
       },
     }),
@@ -247,9 +243,7 @@ async function main() {
         description: 'Microondas LG 32 litros, tecnologia Smart Inverter. Color acero inoxidable. Casi nuevo, solo 6 meses de uso.',
         price: 65000,
         category: PostCategory.HOME_APPLIANCES,
-        images: [
-          productImg('microwave-steel', 800, 600),
-        ],
+        images: [IMAGES.microwave],
         authorId: carlos.id,
       },
     }),
