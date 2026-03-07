@@ -21,10 +21,8 @@ export default function TabLayout() {
             paddingTop: 8,
           },
           tabBarLabelStyle: {
-            fontSize: 10,
-            letterSpacing: 1.5,
-            fontWeight: '500',
-            textTransform: 'uppercase',
+            fontSize: 11,
+            fontWeight: '600',
           },
         }}
       >
@@ -32,7 +30,7 @@ export default function TabLayout() {
           name="home"
           options={{
             title: 'Inicio',
-          }}
+}}
         />
         <Tabs.Screen
           name="marketplace"

@@ -1,7 +1,8 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { Post } from '@/models/post';
-import { colors, spacing, typography } from '@/theme';
+import PlaceholderImage from './PlaceholderImage';
+import { colors, spacing, typography, cardShadow } from '@/theme';
 
 interface PostCardProps {
   post: Post;
@@ -36,8 +37,12 @@ const CATEGORY_LABELS: Record<string, string> = {
 export default function PostCard({ post, onPress }: PostCardProps) {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
-      {post.images[0] && (
+      {post.images[0] ? (
         <Image source={{ uri: post.images[0] }} style={styles.image} contentFit="cover" />
+      ) : (
+        <View style={styles.image}>
+          <PlaceholderImage text="🛍️" index={post.title.length} />
+        </View>
       )}
       <View style={styles.content}>
         <View style={styles.topRow}>
@@ -59,12 +64,11 @@ export default function PostCard({ post, onPress }: PostCardProps) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
-    borderRadius: 8,
+    borderRadius: 16,
     marginHorizontal: spacing.lg,
     marginBottom: spacing.md,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: colors.surfaceBorder,
+    ...cardShadow,
   },
   image: { width: '100%', height: 200 },
   content: { padding: spacing.md },
@@ -74,11 +78,11 @@ const styles = StyleSheet.create({
   price: { ...typography.price, marginBottom: spacing.sm },
   bottomRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   badge: {
-    backgroundColor: colors.goldSubtle,
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
   },
-  badgeText: { fontSize: 11, color: colors.gold, letterSpacing: 0.5, fontWeight: '500' },
+  badgeText: { fontSize: 12, color: colors.textSecondary, fontWeight: '500' },
   author: { ...typography.caption, color: colors.textSecondary },
 });

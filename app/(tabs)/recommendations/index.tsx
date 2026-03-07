@@ -33,7 +33,8 @@ export default function RecommendationsScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>RECOMENDACIONES</Text>
+        <Text style={styles.headerTitle}>Recomendaciones</Text>
+        <Text style={styles.headerSubtitle}>Servicios probados por vecinos</Text>
       </View>
       <CategoryFilter categories={CATEGORIES} selected={category} onSelect={setCategory} />
       <FlatList
@@ -46,10 +47,11 @@ export default function RecommendationsScreen() {
         onEndReachedThreshold={0.5}
         onRefresh={() => refetch()}
         refreshing={isLoading}
-        ListEmptyComponent={!isLoading ? <View style={styles.empty}><Text style={styles.emptyText}>No hay recomendaciones</Text></View> : null}
+        contentContainerStyle={{ paddingTop: spacing.sm }}
+        ListEmptyComponent={!isLoading ? <View style={styles.empty}><Text style={styles.emptyEmoji}>⭐</Text><Text style={styles.emptyText}>No hay recomendaciones</Text></View> : null}
         ListFooterComponent={isFetchingNextPage ? <ActivityIndicator color={colors.gold} style={styles.loader} /> : null}
       />
-      <TouchableOpacity style={styles.fab} onPress={() => router.push('/(tabs)/recommendations/create')}>
+      <TouchableOpacity style={styles.fab} onPress={() => router.push('/(tabs)/recommendations/create')} activeOpacity={0.85}>
         <Text style={styles.fabText}>+</Text>
       </TouchableOpacity>
     </View>
@@ -58,16 +60,18 @@ export default function RecommendationsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  header: { paddingHorizontal: spacing.lg, paddingTop: spacing.xxl, paddingBottom: spacing.md },
-  headerTitle: { ...typography.subheading, fontSize: 16 },
-  empty: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 100 },
+  header: { paddingHorizontal: spacing.lg, paddingTop: spacing.xxl, paddingBottom: spacing.sm },
+  headerTitle: { ...typography.displayMedium },
+  headerSubtitle: { ...typography.body, color: colors.textMuted, marginTop: 2 },
+  empty: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 80 },
+  emptyEmoji: { fontSize: 40, marginBottom: spacing.sm },
   emptyText: { ...typography.body, color: colors.textMuted },
   loader: { padding: spacing.md },
   fab: {
-    position: 'absolute', bottom: 24, right: 24, width: 52, height: 52,
-    borderRadius: 26, backgroundColor: colors.gold, justifyContent: 'center',
-    alignItems: 'center', elevation: 4, shadowColor: colors.gold,
-    shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 8,
+    position: 'absolute', bottom: 24, right: 24, width: 56, height: 56,
+    borderRadius: 18, backgroundColor: colors.gold, justifyContent: 'center',
+    alignItems: 'center', elevation: 6, shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 12,
   },
-  fabText: { color: colors.background, fontSize: 24, fontWeight: '300' },
+  fabText: { color: '#FFFFFF', fontSize: 28, fontWeight: '400', marginTop: -2 },
 });

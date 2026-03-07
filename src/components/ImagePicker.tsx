@@ -56,8 +56,8 @@ export default function ImagePickerComponent({ images, onImagesChange, maxImages
         ))}
         {images.length < maxImages && (
           <TouchableOpacity style={styles.addBtn} onPress={pickImage}>
-            <Text style={styles.addBtnText}>+</Text>
-            <Text style={styles.addBtnLabel}>AGREGAR</Text>
+            <Text style={styles.addBtnText}>📷</Text>
+            <Text style={styles.addBtnLabel}>Agregar</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -68,18 +68,18 @@ export default function ImagePickerComponent({ images, onImagesChange, maxImages
 const styles = StyleSheet.create({
   container: { marginBottom: spacing.md },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  imageWrapper: { width: 100, height: 100, borderRadius: 4, overflow: 'hidden', borderWidth: 1, borderColor: colors.surfaceBorder },
+  imageWrapper: { width: 100, height: 100, borderRadius: 12, overflow: 'hidden' },
   image: { width: '100%', height: '100%' },
   removeBtn: {
     position: 'absolute', top: 4, right: 4, width: 22, height: 22,
-    borderRadius: 11, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center',
+    borderRadius: 11, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center',
   },
-  removeBtnText: { color: colors.textPrimary, fontSize: 12, fontWeight: '500' },
+  removeBtnText: { color: '#fff', fontSize: 12, fontWeight: '600' },
   addBtn: {
-    width: 100, height: 100, borderRadius: 4, borderWidth: 1,
+    width: 100, height: 100, borderRadius: 12, borderWidth: 1.5,
     borderColor: colors.surfaceBorder, borderStyle: 'dashed', justifyContent: 'center', alignItems: 'center',
     backgroundColor: colors.surface,
   },
-  addBtnText: { fontSize: 24, color: colors.gold, fontWeight: '200' },
-  addBtnLabel: { fontSize: 9, color: colors.textMuted, marginTop: 2, letterSpacing: 1 },
+  addBtnText: { fontSize: 24, marginBottom: 2 },
+  addBtnLabel: { fontSize: 11, color: colors.textMuted, fontWeight: '500' },
 });

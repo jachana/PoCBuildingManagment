@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import RatingStars from './RatingStars';
 import { Recommendation } from '@/models/recommendation';
-import { colors, spacing, typography } from '@/theme';
+import { colors, spacing, typography, cardShadow } from '@/theme';
 
 interface Props {
   recommendation: Recommendation;
@@ -26,7 +26,6 @@ export default function RecommendationCard({ recommendation, onPress }: Props) {
       </View>
       <Text style={styles.comment} numberOfLines={2}>{recommendation.comment}</Text>
       <View style={styles.footer}>
-        <View style={styles.footerDivider} />
         <Text style={styles.author}>Recomendado por {recommendation.author.displayName}</Text>
       </View>
     </TouchableOpacity>
@@ -36,26 +35,24 @@ export default function RecommendationCard({ recommendation, onPress }: Props) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
-    borderRadius: 8,
+    borderRadius: 16,
     padding: spacing.md,
     marginHorizontal: spacing.lg,
     marginBottom: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.surfaceBorder,
+    ...cardShadow,
   },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.sm },
   serviceName: { ...typography.heading, fontSize: 16, flex: 1, marginRight: spacing.sm },
   badge: {
-    backgroundColor: colors.goldSubtle,
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     alignSelf: 'flex-start',
     marginBottom: spacing.sm,
   },
-  badgeText: { fontSize: 11, color: colors.gold, letterSpacing: 0.5, fontWeight: '500' },
+  badgeText: { fontSize: 12, color: colors.textSecondary, fontWeight: '500' },
   comment: { ...typography.body, marginBottom: spacing.sm },
-  footer: {},
-  footerDivider: { height: 1, backgroundColor: colors.divider, marginBottom: spacing.sm },
+  footer: { borderTopWidth: 1, borderTopColor: colors.divider, paddingTop: spacing.sm },
   author: { ...typography.caption, color: colors.textMuted },
 });

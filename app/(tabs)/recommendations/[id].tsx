@@ -3,7 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import RatingStars from '@/components/RatingStars';
 import { useRecommendationQuery } from '@/hooks/useRecommendations';
 import { useAuth } from '@/hooks/useAuth';
-import { colors, spacing, typography } from '@/theme';
+import { colors, spacing, typography, cardShadow } from '@/theme';
 
 const CATEGORY_LABELS: Record<string, string> = {
   NANNY: 'Nana', TRANSPORTATION: 'Transporte', DOG_WALKER: 'Paseador de perros',
@@ -32,14 +32,18 @@ export default function RecommendationDetailScreen() {
         <Text style={styles.comment}>{item.comment}</Text>
         {item.contactInfo && (
           <View style={styles.contactBox}>
-            <Text style={styles.contactLabel}>CONTACTO</Text>
+            <Text style={styles.contactLabel}>📞 Contacto</Text>
             <Text style={styles.contactInfo}>{item.contactInfo}</Text>
           </View>
         )}
-        <View style={styles.divider} />
-        <View style={styles.authorRow}>
-          <Text style={styles.authorLabel}>RECOMENDADO POR</Text>
-          <Text style={styles.authorName}>{item.author.displayName}</Text>
+        <View style={styles.authorCard}>
+          <View style={styles.authorAvatar}>
+            <Text style={styles.authorAvatarText}>{item.author.displayName[0]}</Text>
+          </View>
+          <View>
+            <Text style={styles.authorLabel}>Recomendado por</Text>
+            <Text style={styles.authorName}>{item.author.displayName}</Text>
+          </View>
         </View>
         {!isOwner && (
           <>
@@ -71,18 +75,25 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
   content: { padding: spacing.lg, paddingTop: spacing.xxl },
   serviceName: { ...typography.displayMedium, fontSize: 24, marginBottom: spacing.sm },
-  badge: { backgroundColor: colors.goldSubtle, borderRadius: 4, paddingHorizontal: 10, paddingVertical: 4, alignSelf: 'flex-start', marginVertical: spacing.md },
-  badgeText: { fontSize: 12, color: colors.gold, letterSpacing: 0.5, fontWeight: '500' },
+  badge: { backgroundColor: colors.surfaceElevated, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, alignSelf: 'flex-start', marginVertical: spacing.md },
+  badgeText: { fontSize: 12, color: colors.textSecondary, fontWeight: '500' },
   comment: { ...typography.body, lineHeight: 24, marginBottom: spacing.md },
-  contactBox: { backgroundColor: colors.surface, borderRadius: 8, borderWidth: 1, borderColor: colors.surfaceBorder, padding: spacing.md, marginBottom: spacing.md },
-  contactLabel: { ...typography.caption, letterSpacing: 2, marginBottom: 4 },
-  contactInfo: { ...typography.body, color: colors.textPrimary },
-  divider: { height: 1, backgroundColor: colors.divider, marginVertical: spacing.md },
-  authorRow: { marginBottom: spacing.lg },
-  authorLabel: { ...typography.caption, letterSpacing: 2, marginBottom: 4 },
-  authorName: { ...typography.heading, fontSize: 15 },
-  reportButton: { borderWidth: 1, borderColor: colors.error, borderRadius: 4, padding: 16, alignItems: 'center' },
-  reportButtonText: { color: colors.error, fontSize: 13 },
-  blockButton: { borderWidth: 1, borderColor: colors.textMuted, borderRadius: 4, padding: 16, alignItems: 'center', marginTop: spacing.sm },
-  blockButtonText: { color: colors.textMuted, fontSize: 13 },
+  contactBox: { backgroundColor: colors.surface, borderRadius: 14, padding: spacing.md, marginBottom: spacing.md, ...cardShadow },
+  contactLabel: { ...typography.caption, color: colors.textSecondary, fontWeight: '600', marginBottom: 4 },
+  contactInfo: { fontSize: 15, color: colors.textPrimary },
+  authorCard: {
+    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface,
+    padding: spacing.md, borderRadius: 14, marginBottom: spacing.lg, ...cardShadow,
+  },
+  authorAvatar: {
+    width: 40, height: 40, borderRadius: 12, backgroundColor: colors.goldSubtle,
+    justifyContent: 'center', alignItems: 'center', marginRight: spacing.md,
+  },
+  authorAvatarText: { fontSize: 16, fontWeight: '600', color: colors.gold },
+  authorLabel: { ...typography.caption, marginBottom: 1 },
+  authorName: { fontSize: 15, fontWeight: '600', color: colors.textPrimary },
+  reportButton: { borderWidth: 1, borderColor: colors.error, borderRadius: 14, padding: 14, alignItems: 'center' },
+  reportButtonText: { color: colors.error, fontSize: 14 },
+  blockButton: { borderWidth: 1, borderColor: colors.textMuted, borderRadius: 14, padding: 14, alignItems: 'center', marginTop: spacing.sm },
+  blockButtonText: { color: colors.textMuted, fontSize: 14 },
 });

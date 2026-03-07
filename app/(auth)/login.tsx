@@ -25,18 +25,19 @@ export default function LoginScreen() {
       <View style={styles.inner}>
         <View style={styles.brandSection}>
           <View style={styles.logoMark}>
-            <Text style={styles.logoLetter}>R</Text>
+            <Text style={styles.logoEmoji}>🏡</Text>
           </View>
-          <Text style={styles.brandName}>THE RESIDENCE</Text>
-          <View style={styles.brandDivider} />
-          <Text style={styles.brandTagline}>COMUNIDAD EXCLUSIVA</Text>
+          <Text style={styles.brandName}>The Residence</Text>
+          <Text style={styles.brandTagline}>Tu comunidad, tu hogar</Text>
         </View>
 
-        <View style={styles.form}>
-          <Text style={styles.inputLabel}>EMAIL</Text>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Bienvenido</Text>
+
+          <Text style={styles.inputLabel}>Email</Text>
           <TextInput
             style={styles.input}
-            placeholder=""
+            placeholder="tu@email.com"
             placeholderTextColor={colors.textMuted}
             value={email}
             onChangeText={setEmail}
@@ -45,10 +46,10 @@ export default function LoginScreen() {
             autoCorrect={false}
           />
 
-          <Text style={styles.inputLabel}>CONTRASENA</Text>
+          <Text style={styles.inputLabel}>Contrasena</Text>
           <TextInput
             style={styles.input}
-            placeholder=""
+            placeholder="********"
             placeholderTextColor={colors.textMuted}
             value={password}
             onChangeText={setPassword}
@@ -59,16 +60,17 @@ export default function LoginScreen() {
             style={[styles.button, loginMutation.isPending && styles.buttonDisabled]}
             onPress={handleLogin}
             disabled={loginMutation.isPending}
+            activeOpacity={0.8}
           >
             <Text style={styles.buttonText}>
-              {loginMutation.isPending ? 'INGRESANDO...' : 'INGRESAR'}
+              {loginMutation.isPending ? 'Ingresando...' : 'Ingresar'}
             </Text>
           </TouchableOpacity>
         </View>
 
         <Link href="/(auth)/register" asChild>
           <TouchableOpacity style={styles.linkButton}>
-            <Text style={styles.linkText}>Solicitar acceso</Text>
+            <Text style={styles.linkText}>¿No tienes cuenta? <Text style={styles.linkBold}>Solicitar acceso</Text></Text>
           </TouchableOpacity>
         </Link>
       </View>
@@ -78,81 +80,74 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  inner: { flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
+  inner: { flex: 1, justifyContent: 'center', paddingHorizontal: spacing.lg },
 
-  brandSection: { alignItems: 'center', marginBottom: spacing.xxl },
+  brandSection: { alignItems: 'center', marginBottom: spacing.xl },
   logoMark: {
     width: 72,
     height: 72,
-    borderRadius: 36,
-    borderWidth: 1.5,
-    borderColor: colors.gold,
+    borderRadius: 20,
+    backgroundColor: colors.goldSubtle,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
   },
-  logoLetter: {
-    fontSize: 28,
-    fontWeight: '200',
-    color: colors.gold,
-    letterSpacing: 2,
-  },
+  logoEmoji: { fontSize: 32 },
   brandName: {
     ...typography.displayLarge,
-    fontSize: 22,
-    letterSpacing: 6,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  brandDivider: {
-    width: 40,
-    height: 1,
-    backgroundColor: colors.gold,
-    marginVertical: spacing.sm,
+    fontSize: 28,
+    marginBottom: spacing.xs,
   },
   brandTagline: {
-    ...typography.caption,
-    letterSpacing: 3,
+    ...typography.body,
     color: colors.textMuted,
   },
 
-  form: { marginBottom: spacing.lg },
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: 20,
+    padding: spacing.lg,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 24,
+    elevation: 4,
+  },
+  cardTitle: {
+    ...typography.heading,
+    fontSize: 20,
+    marginBottom: spacing.lg,
+  },
   inputLabel: {
     ...typography.caption,
-    letterSpacing: 2,
-    color: colors.textMuted,
+    color: colors.textSecondary,
     marginBottom: 6,
-    marginTop: spacing.md,
+    marginTop: spacing.sm,
   },
   input: {
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceBorder,
-    paddingVertical: 12,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: 12,
+    paddingHorizontal: spacing.md,
+    paddingVertical: 14,
     fontSize: 16,
     color: colors.textPrimary,
-    fontWeight: '300',
-    letterSpacing: 0.5,
+    borderWidth: 1,
+    borderColor: colors.surfaceBorder,
   },
   button: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: colors.gold,
-    borderRadius: 4,
+    backgroundColor: colors.gold,
+    borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
-    marginTop: spacing.xl,
+    marginTop: spacing.lg,
   },
-  buttonDisabled: { opacity: 0.4 },
+  buttonDisabled: { opacity: 0.6 },
   buttonText: {
-    color: colors.gold,
-    fontSize: 13,
-    fontWeight: '500',
-    letterSpacing: 3,
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
-  linkButton: { alignItems: 'center', paddingVertical: spacing.md },
-  linkText: {
-    color: colors.textMuted,
-    fontSize: 13,
-    letterSpacing: 1,
-  },
+  linkButton: { alignItems: 'center', paddingVertical: spacing.lg },
+  linkText: { color: colors.textSecondary, fontSize: 14 },
+  linkBold: { color: colors.gold, fontWeight: '600' },
 });

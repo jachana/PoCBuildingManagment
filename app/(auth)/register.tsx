@@ -4,7 +4,7 @@ import { Link, useRouter } from 'expo-router';
 import { useAuth } from '@/hooks/useAuth';
 import { colors, spacing, typography } from '@/theme';
 
-const BUILDING_ID = 'bld-seed-001'; // Hardcoded for PoC
+const BUILDING_ID = 'bld-seed-001';
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -45,7 +45,7 @@ export default function RegisterScreen() {
         onSuccess: () => {
           Alert.alert(
             'Solicitud enviada',
-            'Tu cuenta esta pendiente de aprobacion por la administracion.',
+            'Tu cuenta esta pendiente de aprobacion.',
             [{ text: 'OK', onPress: () => router.replace('/(auth)/login') }],
           );
         },
@@ -54,39 +54,56 @@ export default function RegisterScreen() {
     );
   };
 
+  const fields = [
+    { key: 'email', label: 'Email', keyboard: 'email-address' as const, placeholder: 'tu@email.com' },
+    { key: 'password', label: 'Contrasena', secure: true, placeholder: 'Min. 8 caracteres' },
+    { key: 'fullName', label: 'Nombre completo', placeholder: 'Juan Perez' },
+    { key: 'displayName', label: 'Nombre a mostrar', placeholder: 'Juan' },
+    { key: 'unitNumber', label: 'Departamento', placeholder: 'Ej: 1204' },
+    { key: 'phone', label: 'Telefono (opcional)', keyboard: 'phone-pad' as const, placeholder: '+56 9...' },
+  ];
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.title}>SOLICITAR ACCESO</Text>
-        <View style={styles.titleDivider} />
-        <Text style={styles.subtitle}>Tu solicitud sera revisada por la administracion</Text>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Text style={styles.headerEmoji}>✨</Text>
+          <Text style={styles.title}>Solicitar acceso</Text>
+          <Text style={styles.subtitle}>Tu solicitud sera revisada por administracion</Text>
+        </View>
 
-        <Text style={styles.label}>EMAIL</Text>
-        <TextInput style={styles.input} value={form.email} onChangeText={(v) => updateField('email', v)} keyboardType="email-address" autoCapitalize="none" placeholderTextColor={colors.textMuted} />
-        <Text style={styles.label}>CONTRASENA</Text>
-        <TextInput style={styles.input} value={form.password} onChangeText={(v) => updateField('password', v)} secureTextEntry placeholderTextColor={colors.textMuted} />
-        <Text style={styles.label}>NOMBRE COMPLETO</Text>
-        <TextInput style={styles.input} value={form.fullName} onChangeText={(v) => updateField('fullName', v)} placeholderTextColor={colors.textMuted} />
-        <Text style={styles.label}>NOMBRE A MOSTRAR</Text>
-        <TextInput style={styles.input} value={form.displayName} onChangeText={(v) => updateField('displayName', v)} placeholderTextColor={colors.textMuted} />
-        <Text style={styles.label}>DEPARTAMENTO</Text>
-        <TextInput style={styles.input} value={form.unitNumber} onChangeText={(v) => updateField('unitNumber', v)} placeholderTextColor={colors.textMuted} />
-        <Text style={styles.label}>TELEFONO (OPCIONAL)</Text>
-        <TextInput style={styles.input} value={form.phone} onChangeText={(v) => updateField('phone', v)} keyboardType="phone-pad" placeholderTextColor={colors.textMuted} />
+        <View style={styles.card}>
+          {fields.map((f) => (
+            <View key={f.key}>
+              <Text style={styles.inputLabel}>{f.label}</Text>
+              <TextInput
+                style={styles.input}
+                value={form[f.key as keyof typeof form]}
+                onChangeText={(v) => updateField(f.key, v)}
+                placeholder={f.placeholder}
+                placeholderTextColor={colors.textMuted}
+                keyboardType={f.keyboard || 'default'}
+                autoCapitalize={f.key === 'email' ? 'none' : 'words'}
+                secureTextEntry={f.secure}
+              />
+            </View>
+          ))}
 
-        <TouchableOpacity
-          style={[styles.button, registerMutation.isPending && styles.buttonDisabled]}
-          onPress={handleRegister}
-          disabled={registerMutation.isPending}
-        >
-          <Text style={styles.buttonText}>
-            {registerMutation.isPending ? 'ENVIANDO...' : 'ENVIAR SOLICITUD'}
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, registerMutation.isPending && styles.buttonDisabled]}
+            onPress={handleRegister}
+            disabled={registerMutation.isPending}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>
+              {registerMutation.isPending ? 'Enviando...' : 'Enviar solicitud'}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
         <Link href="/(auth)/login" asChild>
           <TouchableOpacity style={styles.linkButton}>
-            <Text style={styles.linkText}>Ya tengo acceso</Text>
+            <Text style={styles.linkText}>Ya tengo cuenta. <Text style={styles.linkBold}>Ingresar</Text></Text>
           </TouchableOpacity>
         </Link>
       </ScrollView>
@@ -96,30 +113,44 @@ export default function RegisterScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  scroll: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: spacing.xl, paddingVertical: spacing.xxl },
-  title: { ...typography.displayMedium, fontSize: 20, letterSpacing: 4, textAlign: 'center', marginBottom: spacing.sm },
-  titleDivider: { width: 40, height: 1, backgroundColor: colors.gold, alignSelf: 'center', marginBottom: spacing.sm },
-  subtitle: { ...typography.caption, textAlign: 'center', marginBottom: spacing.xl, color: colors.textMuted },
-  label: { ...typography.caption, letterSpacing: 2, color: colors.textMuted, marginBottom: 6, marginTop: spacing.md },
+  scroll: { flexGrow: 1, paddingHorizontal: spacing.lg, paddingVertical: spacing.xxl },
+
+  header: { alignItems: 'center', marginBottom: spacing.lg },
+  headerEmoji: { fontSize: 36, marginBottom: spacing.sm },
+  title: { ...typography.displayMedium, marginBottom: spacing.xs },
+  subtitle: { ...typography.body, color: colors.textMuted, textAlign: 'center' },
+
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: 20,
+    padding: spacing.lg,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 24,
+    elevation: 4,
+  },
+  inputLabel: { ...typography.caption, color: colors.textSecondary, marginBottom: 6, marginTop: spacing.md },
   input: {
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceBorder,
-    paddingVertical: 12,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: 12,
+    paddingHorizontal: spacing.md,
+    paddingVertical: 14,
     fontSize: 16,
     color: colors.textPrimary,
-    fontWeight: '300',
-    letterSpacing: 0.5,
+    borderWidth: 1,
+    borderColor: colors.surfaceBorder,
   },
   button: {
-    borderWidth: 1,
-    borderColor: colors.gold,
-    borderRadius: 4,
+    backgroundColor: colors.gold,
+    borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: spacing.xl,
   },
-  buttonDisabled: { opacity: 0.4 },
-  buttonText: { color: colors.gold, fontSize: 13, fontWeight: '500', letterSpacing: 3 },
-  linkButton: { alignItems: 'center', marginTop: spacing.md, padding: spacing.sm },
-  linkText: { color: colors.textMuted, fontSize: 13, letterSpacing: 1 },
+  buttonDisabled: { opacity: 0.6 },
+  buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
+  linkButton: { alignItems: 'center', paddingVertical: spacing.lg },
+  linkText: { color: colors.textSecondary, fontSize: 14 },
+  linkBold: { color: colors.gold, fontWeight: '600' },
 });

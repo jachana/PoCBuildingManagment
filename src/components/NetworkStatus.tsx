@@ -17,7 +17,7 @@ export function NetworkStatus() {
 
   return (
     <View style={styles.banner}>
-      <Text style={styles.text}>SIN CONEXION</Text>
+      <Text style={styles.text}>⚡ Sin conexion a internet</Text>
     </View>
   );
 }
@@ -29,9 +29,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    color: colors.textPrimary,
-    fontSize: 11,
-    fontWeight: '500',
-    letterSpacing: 2,
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '600',
   },
 });

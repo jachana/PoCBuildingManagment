@@ -35,6 +35,6 @@ export default function RatingStars({ rating, interactive = false, onRate, size 
 const styles = StyleSheet.create({
   container: { flexDirection: 'row', alignItems: 'center' },
   star: { marginRight: 2 },
-  starText: { color: colors.textMuted },
-  starFilled: { color: colors.gold },
+  starText: { color: colors.surfaceElevated },
+  starFilled: { color: '#E5A84B' },
 });
