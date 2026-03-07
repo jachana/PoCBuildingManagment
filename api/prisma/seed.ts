@@ -16,6 +16,11 @@ function productImg(seed: string, w = 800, h = 600): string {
 async function main() {
   const passwordHash = await bcrypt.hash('demo123456', 12);
 
+  // Clean existing content so seed always applies fresh with images
+  await prisma.entrepreneurProfile.deleteMany({});
+  await prisma.recommendation.deleteMany({});
+  await prisma.post.deleteMany({});
+
   // Building
   const building = await prisma.building.upsert({
     where: { id: 'bld-demo-001' },
