@@ -28,7 +28,13 @@ const router = Router();
 
 async function resolveImageUrls(images: string[]): Promise<string[]> {
   try {
-    return await Promise.all(images.map((key) => generatePresignedGetUrl(key)));
+    return await Promise.all(
+      images.map((key) =>
+        key.startsWith('http://') || key.startsWith('https://')
+          ? key
+          : generatePresignedGetUrl(key),
+      ),
+    );
   } catch {
     return images;
   }
